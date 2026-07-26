@@ -4,6 +4,7 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useUser } from '../context/UserContext';
 import CompletionScreen from '../screens/CompletionScreen';
+import DailyPracticeScreen from '../screens/DailyPracticeScreen';
 import LessonScreen from '../screens/LessonScreen';
 import ExploreFeedbackScreen from '../screens/explore/ExploreFeedbackScreen';
 import LifeStageScreen from '../screens/onboarding/LifeStageScreen';
@@ -59,6 +60,11 @@ export default function RootNavigator() {
             <Stack.Screen
               name="Lesson"
               component={LessonScreen}
+              options={{ animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen
+              name="DailyPractice"
+              component={DailyPracticeScreen}
               options={{ animation: 'slide_from_bottom' }}
             />
             <Stack.Screen name="Completion" component={CompletionScreen} />

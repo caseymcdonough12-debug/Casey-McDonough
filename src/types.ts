@@ -1,5 +1,6 @@
 export type TrackId =
   | 'finance'
+  | 'accounting'
   | 'marketing'
   | 'consulting'
   | 'startups'
@@ -7,6 +8,7 @@ export type TrackId =
 
 export const ALL_TRACK_IDS: TrackId[] = [
   'finance',
+  'accounting',
   'marketing',
   'consulting',
   'startups',
@@ -49,6 +51,7 @@ export interface SpreadsheetCell {
 export interface LessonQuestion {
   id: string;
   nodeId: string;
+  conceptId: string; // groups questions so a teaching card can precede each new concept
   kind: QuestionKind;
   difficultyTier: 1 | 2 | 3 | 4 | 5;
   prompt: string;
@@ -58,6 +61,25 @@ export interface LessonQuestion {
   acceptedFormulas: string[]; // normalized (uppercase, no spaces) accepted answers
   correctFormula: string; // canonical form to display
   explanation: string;
+}
+
+export interface ConceptExample {
+  scenarioPrompt: string; // the worked example's own prompt
+  columnHeaders: string[];
+  cells: SpreadsheetCell[];
+  targetCellLabel: string;
+  formula: string;
+  resultExplanation: string;
+}
+
+export interface ConceptTeaching {
+  id: string;
+  trackId: TrackId;
+  nodeId: string;
+  title: string;
+  whatItDoes: string;
+  realWorldScenario: string;
+  example: ConceptExample;
 }
 
 export interface UserProfile {
@@ -77,6 +99,7 @@ export interface TrackProgress {
   completedNodeIds: string[];
   effectiveProficiency: number; // per-track, adjusts from baseline via performance
   recentAnswers: boolean[]; // rolling window of correctness, most recent last
+  lastDailyPracticeDate: string | null; // YYYY-MM-DD of last completed daily practice
 }
 
 export type ProgressState = Record<TrackId, TrackProgress>;

@@ -9,6 +9,14 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     icon: '📊',
     live: true,
   },
+  accounting: {
+    id: 'accounting',
+    name: 'Accounting',
+    tagline: 'Debits, credits, and financial statements',
+    color: '#0EA5A4',
+    icon: '🧮',
+    live: false,
+  },
   marketing: {
     id: 'marketing',
     name: 'Marketing',
@@ -45,6 +53,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
 
 export const TRACK_ORDER: TrackId[] = [
   'finance',
+  'accounting',
   'marketing',
   'consulting',
   'startups',
@@ -58,6 +67,9 @@ export const LESSON_NODES: Record<TrackId, LessonNode[]> = {
     { id: 'finance-reading-a-pl', trackId: 'finance', title: 'Reading a P&L', order: 3, live: false },
     { id: 'finance-stock-market-101', trackId: 'finance', title: 'Stock Market 101', order: 4, live: false },
     { id: 'finance-job-market-map', trackId: 'finance', title: 'Job Market Map', order: 5, live: false },
+  ],
+  accounting: [
+    { id: 'accounting-node-1', trackId: 'accounting', title: 'Coming soon', order: 1, live: false },
   ],
   marketing: [
     { id: 'marketing-node-1', trackId: 'marketing', title: 'Coming soon', order: 1, live: false },

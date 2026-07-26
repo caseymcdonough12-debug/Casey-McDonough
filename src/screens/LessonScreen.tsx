@@ -1,27 +1,23 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import MiniSpreadsheet from '../components/MiniSpreadsheet';
-import PrimaryButton from '../components/PrimaryButton';
+import React, { useMemo, useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import ConceptTeachingCard from '../components/ConceptTeachingCard';
+import PracticeQuestion from '../components/PracticeQuestion';
 import { useProgress } from '../context/ProgressContext';
 import { EXCEL_BASICS_QUESTIONS } from '../data/excelBasics';
+import { EXCEL_CONCEPTS } from '../data/excelConcepts';
 import { RootStackParamList } from '../navigation/types';
-import { radius, spacing } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
-import { isFormulaCorrect } from '../utils/formula';
+import { ConceptTeaching, LessonQuestion } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Lesson'>;
 
-const QUESTIONS_BY_NODE: Record<string, typeof EXCEL_BASICS_QUESTIONS> = {
+const QUESTIONS_BY_NODE: Record<string, LessonQuestion[]> = {
   'finance-excel-basics': EXCEL_BASICS_QUESTIONS,
+};
+
+const CONCEPTS_BY_NODE: Record<string, Record<string, ConceptTeaching>> = {
+  'finance-excel-basics': EXCEL_CONCEPTS,
 };
 
 export default function LessonScreen({ route, navigation }: Props) {
@@ -30,49 +26,90 @@ export default function LessonScreen({ route, navigation }: Props) {
   const { recordAnswer, completeNode } = useProgress();
 
   const questions = QUESTIONS_BY_NODE[nodeId] ?? [];
-  const [index, setIndex] = useState(0);
-  const [input, setInput] = useState('');
-  const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const concepts = CONCEPTS_BY_NODE[nodeId] ?? {};
+
+  const conceptOrder = useMemo(() => {
+    const seen: string[] = [];
+    for (const q of questions) {
+      if (!seen.includes(q.conceptId)) seen.push(q.conceptId);
+    }
+    return seen;
+  }, [questions]);
+
+  const [conceptIndex, setConceptIndex] = useState(0);
+  const [withinConceptIndex, setWithinConceptIndex] = useState(0);
+  const [phase, setPhase] = useState<'learn' | 'practice'>(
+    conceptOrder.length > 0 ? 'learn' : 'practice'
+  );
   const [correctCount, setCorrectCount] = useState(0);
   const [xpEarned, setXpEarned] = useState(0);
 
-  const question = questions[index];
-  const isLastQuestion = index === questions.length - 1;
-
-  if (!question) {
+  if (questions.length === 0) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={{ color: colors.text }}>This lesson isn't available yet.</Text>
+        <Text style={{ color: colors.text, padding: 24 }}>
+          This lesson isn't available yet.
+        </Text>
       </View>
     );
   }
 
-  const handleCheck = async () => {
-    if (!input.trim()) return;
-    const correct = isFormulaCorrect(input, question.acceptedFormulas);
-    const earned = await recordAnswer(trackId, question.difficultyTier, correct);
-    setXpEarned((prev) => prev + earned);
-    if (correct) setCorrectCount((prev) => prev + 1);
-    setFeedback(correct ? 'correct' : 'incorrect');
+  const currentConceptId = conceptOrder[conceptIndex];
+  const conceptQuestions = questions.filter((q) => q.conceptId === currentConceptId);
+  const currentQuestion = conceptQuestions[withinConceptIndex];
+  const isLastConcept = conceptIndex === conceptOrder.length - 1;
+  const isLastQuestionInConcept = withinConceptIndex === conceptQuestions.length - 1;
+  const isFinalQuestion = isLastConcept && isLastQuestionInConcept;
+
+  const globalQuestionNumber =
+    questions.findIndex((q) => q.id === currentQuestion.id) + 1;
+
+  const finishLesson = async () => {
+    await completeNode(trackId, nodeId);
+    navigation.replace('Completion', {
+      trackId,
+      nodeId,
+      xpEarned,
+      correctCount,
+      totalCount: questions.length,
+      fromExplore,
+    });
   };
 
-  const handleContinue = async () => {
-    if (isLastQuestion) {
-      await completeNode(trackId, nodeId);
-      navigation.replace('Completion', {
-        trackId,
-        nodeId,
-        xpEarned,
-        correctCount,
-        totalCount: questions.length,
-        fromExplore,
-      });
+  const handleSubmit = async (correct: boolean) => {
+    const earned = await recordAnswer(trackId, currentQuestion.difficultyTier, correct);
+    setXpEarned((prev) => prev + earned);
+    if (correct) setCorrectCount((prev) => prev + 1);
+  };
+
+  const handlePracticeContinue = async () => {
+    if (isFinalQuestion) {
+      await finishLesson();
       return;
     }
-    setIndex((prev) => prev + 1);
-    setInput('');
-    setFeedback(null);
+    if (isLastQuestionInConcept) {
+      setConceptIndex((prev) => prev + 1);
+      setWithinConceptIndex(0);
+      setPhase('learn');
+    } else {
+      setWithinConceptIndex((prev) => prev + 1);
+    }
   };
+
+  if (phase === 'learn' && concepts[currentConceptId]) {
+    return (
+      <ConceptTeachingCard
+        concept={concepts[currentConceptId]}
+        onReady={() => setPhase('practice')}
+      />
+    );
+  }
+
+  const continueLabel = isFinalQuestion
+    ? 'Finish lesson'
+    : isLastQuestionInConcept
+      ? 'Continue'
+      : 'Next question';
 
   return (
     <KeyboardAvoidingView
@@ -81,81 +118,16 @@ export default function LessonScreen({ route, navigation }: Props) {
     >
       <ScrollView
         style={[styles.container, { backgroundColor: colors.background }]}
-        contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={[styles.progress, { color: colors.textMuted }]}>
-          Question {index + 1} of {questions.length}
-        </Text>
-        <Text style={[styles.prompt, { color: colors.text }]}>{question.prompt}</Text>
-
-        <MiniSpreadsheet columnHeaders={question.columnHeaders} cells={question.cells} />
-
-        <View style={styles.inputRow}>
-          <Text style={[styles.cellLabel, { color: colors.textMuted }]}>
-            {question.targetCellLabel}
-          </Text>
-          <TextInput
-            value={input}
-            onChangeText={setInput}
-            editable={feedback === null}
-            placeholder="=SUM(...)"
-            placeholderTextColor={colors.textMuted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={[
-              styles.input,
-              {
-                color: colors.text,
-                borderColor:
-                  feedback === 'correct'
-                    ? colors.success
-                    : feedback === 'incorrect'
-                      ? colors.danger
-                      : colors.border,
-                backgroundColor: colors.surface,
-              },
-            ]}
-          />
-        </View>
-
-        {feedback && (
-          <View
-            style={[
-              styles.feedbackBox,
-              {
-                backgroundColor: colors.surfaceRaised,
-                borderColor: feedback === 'correct' ? colors.success : colors.danger,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.feedbackTitle,
-                { color: feedback === 'correct' ? colors.success : colors.danger },
-              ]}
-            >
-              {feedback === 'correct' ? 'Correct!' : 'Not quite'}
-            </Text>
-            <Text style={[styles.feedbackFormula, { color: colors.text }]}>
-              {question.correctFormula}
-            </Text>
-            <Text style={[styles.feedbackExplanation, { color: colors.textMuted }]}>
-              {question.explanation}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.spacer} />
-
-        {feedback === null ? (
-          <PrimaryButton title="Check" onPress={handleCheck} disabled={!input.trim()} />
-        ) : (
-          <PrimaryButton
-            title={isLastQuestion ? 'Finish lesson' : 'Next question'}
-            onPress={handleContinue}
-          />
-        )}
+        <PracticeQuestion
+          key={currentQuestion.id}
+          question={currentQuestion}
+          progressLabel={`Question ${globalQuestionNumber} of ${questions.length}`}
+          continueLabel={continueLabel}
+          onSubmit={handleSubmit}
+          onContinue={handlePracticeContinue}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -164,64 +136,5 @@ export default function LessonScreen({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  content: {
-    padding: spacing.lg,
-    paddingTop: spacing.xl,
-  },
-  progress: {
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: spacing.sm,
-  },
-  prompt: {
-    fontSize: 17,
-    fontWeight: '700',
-    marginBottom: spacing.md,
-    lineHeight: 24,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  cellLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    width: 32,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1.5,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontSize: 16,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-  },
-  feedbackBox: {
-    marginTop: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 1.5,
-  },
-  feedbackTitle: {
-    fontSize: 15,
-    fontWeight: '800',
-    marginBottom: spacing.xs,
-  },
-  feedbackFormula: {
-    fontSize: 15,
-    fontWeight: '700',
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    marginBottom: spacing.xs,
-  },
-  feedbackExplanation: {
-    fontSize: 13,
-    lineHeight: 19,
-  },
-  spacer: {
-    height: spacing.xl,
   },
 });

@@ -1,6 +1,6 @@
 import { LessonQuestion } from '../types';
 
-const NODE_ID = 'finance-excel-basics';
+export const NODE_ID = 'finance-excel-basics';
 
 const SALES_HEADERS = ['Item', 'Region', 'Units', 'Price', 'Revenue'];
 
@@ -28,6 +28,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q1-sum-units',
     nodeId: NODE_ID,
+    conceptId: 'sum',
     kind: 'formula',
     difficultyTier: 1,
     prompt:
@@ -43,6 +44,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q2-sum-revenue',
     nodeId: NODE_ID,
+    conceptId: 'sum',
     kind: 'formula',
     difficultyTier: 1,
     prompt:
@@ -58,6 +60,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q3-sumif-west-units',
     nodeId: NODE_ID,
+    conceptId: 'sumif',
     kind: 'formula',
     difficultyTier: 3,
     prompt:
@@ -73,6 +76,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q4-sumif-east-revenue',
     nodeId: NODE_ID,
+    conceptId: 'sumif',
     kind: 'formula',
     difficultyTier: 3,
     prompt:
@@ -88,6 +92,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q5-vlookup-price',
     nodeId: NODE_ID,
+    conceptId: 'vlookup',
     kind: 'formula',
     difficultyTier: 4,
     prompt:
@@ -103,6 +108,7 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
   {
     id: 'excel-q6-vlookup-region',
     nodeId: NODE_ID,
+    conceptId: 'vlookup',
     kind: 'formula',
     difficultyTier: 5,
     prompt:

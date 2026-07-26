@@ -7,12 +7,13 @@ import NodeButton, { NodeStatus } from '../components/NodeButton';
 import TrackSwitcherModal from '../components/TrackSwitcherModal';
 import { useProgress } from '../context/ProgressContext';
 import { useUser } from '../context/UserContext';
+import { QUESTIONS_PER_CONCEPT } from '../data/dailyQuestions';
 import { LESSON_NODES, TRACKS } from '../data/tracks';
 import { RootStackParamList } from '../navigation/types';
 import { radius, spacing } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
 import { TrackId } from '../types';
-import { displayStreak } from '../utils/date';
+import { displayStreak, todayStr } from '../utils/date';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -30,6 +31,12 @@ export default function MapScreen() {
   const trackProgress = getTrackProgress(trackId);
   const streak = displayStreak(trackProgress.streak, trackProgress.lastActiveDate);
 
+  const firstLiveNode = nodes.find((n) => n.live);
+  const dailyPracticeUnlocked =
+    track.live && !!firstLiveNode && trackProgress.completedNodeIds.includes(firstLiveNode.id);
+  const dailyPracticeDoneToday = trackProgress.lastDailyPracticeDate === todayStr();
+  const dailyQuestionCount = QUESTIONS_PER_CONCEPT * 3;
+
   const handleSelectTrack = async (newTrack: TrackId) => {
     setSwitcherVisible(false);
     if (newTrack !== trackId) {
@@ -40,6 +47,10 @@ export default function MapScreen() {
   const handleSelectExplore = () => {
     setSwitcherVisible(false);
     navigation.navigate('MainTabs', { screen: 'Explore' });
+  };
+
+  const handleStartDailyPractice = () => {
+    navigation.navigate('DailyPractice', { trackId });
   };
 
   const handleNodePress = (nodeId: string, isLive: boolean, status: NodeStatus) => {
@@ -81,6 +92,51 @@ export default function MapScreen() {
             {track.name} lessons are still being built — only Finance has full content right now.
           </Text>
         </View>
+      )}
+
+      {track.live && !dailyPracticeUnlocked && (
+        <View
+          style={[
+            styles.dailyCard,
+            { backgroundColor: colors.surfaceRaised, borderColor: colors.border },
+          ]}
+        >
+          <Text style={styles.dailyIcon}>🔒</Text>
+          <View style={styles.dailyTextGroup}>
+            <Text style={[styles.dailyTitle, { color: colors.textMuted }]}>
+              Today's Practice
+            </Text>
+            <Text style={[styles.dailySubtitle, { color: colors.textMuted }]}>
+              Finish {firstLiveNode?.title ?? 'the first lesson'} to unlock daily practice.
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {track.live && dailyPracticeUnlocked && (
+        <Pressable
+          onPress={dailyPracticeDoneToday ? undefined : handleStartDailyPractice}
+          style={[
+            styles.dailyCard,
+            {
+              backgroundColor: dailyPracticeDoneToday ? colors.surfaceRaised : colors.surface,
+              borderColor: dailyPracticeDoneToday ? colors.border : track.color,
+              borderWidth: dailyPracticeDoneToday ? 1 : 2,
+            },
+          ]}
+        >
+          <Text style={styles.dailyIcon}>{dailyPracticeDoneToday ? '✅' : '🗓️'}</Text>
+          <View style={styles.dailyTextGroup}>
+            <Text style={[styles.dailyTitle, { color: colors.text }]}>
+              {dailyPracticeDoneToday ? "Today's practice done" : "Today's Practice"}
+            </Text>
+            <Text style={[styles.dailySubtitle, { color: colors.textMuted }]}>
+              {dailyPracticeDoneToday
+                ? 'New problems tomorrow — keep the habit going.'
+                : `${dailyQuestionCount} fresh problems, fresh numbers every day — about 30 minutes.`}
+            </Text>
+          </View>
+        </Pressable>
       )}
 
       <ScrollView contentContainerStyle={styles.nodesContainer}>
@@ -174,6 +230,31 @@ const styles = StyleSheet.create({
   },
   noticeText: {
     fontSize: 12,
+  },
+  dailyCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    gap: spacing.sm,
+  },
+  dailyIcon: {
+    fontSize: 24,
+  },
+  dailyTextGroup: {
+    flex: 1,
+  },
+  dailyTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  dailySubtitle: {
+    fontSize: 12,
+    lineHeight: 16,
   },
   nodesContainer: {
     alignItems: 'center',

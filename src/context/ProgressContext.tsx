@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { ALL_TRACK_IDS, ExploreFeedbackState, ProgressState, TrackId, TrackProgress } from '../types';
-import { nextStreakOnActivity } from '../utils/date';
+import { nextStreakOnActivity, todayStr } from '../utils/date';
 import { recalibrateProficiency } from '../utils/proficiency';
 import { xpForAnswer } from '../utils/xp';
 import { useUser } from './UserContext';
@@ -23,6 +23,7 @@ function emptyTrackProgress(effectiveProficiency: number): TrackProgress {
     completedNodeIds: [],
     effectiveProficiency,
     recentAnswers: [],
+    lastDailyPracticeDate: null,
   };
 }
 
@@ -41,6 +42,7 @@ interface ProgressContextValue {
     wasCorrect: boolean
   ) => Promise<number>;
   completeNode: (trackId: TrackId, nodeId: string) => Promise<void>;
+  completeDailyPractice: (trackId: TrackId) => Promise<void>;
   recordExploreFeedback: (
     trackId: TrackId,
     liked: boolean
@@ -130,6 +132,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     await persistProgress({ ...(progress ?? {}), [trackId]: next } as ProgressState);
   };
 
+  const completeDailyPractice = async (trackId: TrackId) => {
+    const current = getTrackProgress(trackId);
+    const next: TrackProgress = { ...current, lastDailyPracticeDate: todayStr() };
+    await persistProgress({ ...(progress ?? {}), [trackId]: next } as ProgressState);
+  };
+
   const recordExploreFeedback = async (trackId: TrackId, liked: boolean) => {
     const current = exploreFeedback?.[trackId] ?? emptyExploreFeedback();
     const next = {
@@ -156,6 +164,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       getTrackProgress,
       recordAnswer,
       completeNode,
+      completeDailyPractice,
       recordExploreFeedback,
       dismissNudge,
     }),

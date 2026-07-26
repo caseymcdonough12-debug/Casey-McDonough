@@ -12,7 +12,7 @@ import { displayStreak } from '../utils/date';
 type Props = NativeStackScreenProps<RootStackParamList, 'Completion'>;
 
 export default function CompletionScreen({ route, navigation }: Props) {
-  const { trackId, nodeId, xpEarned, correctCount, totalCount, fromExplore } = route.params;
+  const { trackId, nodeId, xpEarned, correctCount, totalCount, fromExplore, isDaily } = route.params;
   const { colors } = useTheme();
   const { getTrackProgress } = useProgress();
 
@@ -35,8 +35,20 @@ export default function CompletionScreen({ route, navigation }: Props) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={styles.emoji}>🎉</Text>
-      <Text style={[styles.title, { color: colors.text }]}>Lesson complete!</Text>
+      <Text style={styles.emoji}>{isDaily ? '🔥' : '🎉'}</Text>
+      <Text
+        style={[
+          styles.title,
+          { color: colors.text, marginBottom: isDaily ? spacing.sm : spacing.xl },
+        ]}
+      >
+        {isDaily ? "Today's practice complete!" : 'Lesson complete!'}
+      </Text>
+      {isDaily && (
+        <Text style={[styles.subtitle, { color: colors.textMuted }]}>
+          New problems tomorrow — come back and keep the streak going.
+        </Text>
+      )}
 
       <View style={styles.statsRow}>
         <View style={[styles.statCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -74,7 +86,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '800',
+    marginBottom: spacing.sm,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 14,
     marginBottom: spacing.xl,
+    textAlign: 'center',
   },
   statsRow: {
     flexDirection: 'row',
