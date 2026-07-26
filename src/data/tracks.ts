@@ -1,4 +1,9 @@
 import { LessonNode, TrackId, TrackMeta } from '../types';
+import { NODE_ID as ACCOUNTING_NODE_ID } from './accountingBasics';
+import { NODE_ID as CONSULTING_NODE_ID } from './consultingBasics';
+import { NODE_ID as MARKETING_NODE_ID } from './marketingBasics';
+import { NODE_ID as OPERATIONS_NODE_ID } from './operationsBasics';
+import { NODE_ID as STARTUPS_NODE_ID } from './startupsBasics';
 
 export const TRACKS: Record<TrackId, TrackMeta> = {
   finance: {
@@ -15,7 +20,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     tagline: 'Debits, credits, and financial statements',
     color: '#0EA5A4',
     icon: '🧮',
-    live: false,
+    live: true,
   },
   marketing: {
     id: 'marketing',
@@ -23,7 +28,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     tagline: 'Positioning, channels, and growth',
     color: '#F472B6',
     icon: '📣',
-    live: false,
+    live: true,
   },
   consulting: {
     id: 'consulting',
@@ -31,7 +36,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     tagline: 'Frameworks and structured problem-solving',
     color: '#818CF8',
     icon: '🧩',
-    live: false,
+    live: true,
   },
   startups: {
     id: 'startups',
@@ -39,7 +44,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     tagline: 'From idea to first customers',
     color: '#FB923C',
     icon: '🚀',
-    live: false,
+    live: true,
   },
   operations: {
     id: 'operations',
@@ -47,7 +52,7 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     tagline: 'Process, logistics, and efficiency',
     color: '#38BDF8',
     icon: '⚙️',
-    live: false,
+    live: true,
   },
 };
 
@@ -69,18 +74,23 @@ export const LESSON_NODES: Record<TrackId, LessonNode[]> = {
     { id: 'finance-job-market-map', trackId: 'finance', title: 'Job Market Map', order: 5, live: false },
   ],
   accounting: [
-    { id: 'accounting-node-1', trackId: 'accounting', title: 'Coming soon', order: 1, live: false },
+    { id: ACCOUNTING_NODE_ID, trackId: 'accounting', title: 'Debits & Credits Basics', order: 1, live: true },
+    { id: 'accounting-node-2', trackId: 'accounting', title: 'Coming soon', order: 2, live: false },
   ],
   marketing: [
-    { id: 'marketing-node-1', trackId: 'marketing', title: 'Coming soon', order: 1, live: false },
+    { id: MARKETING_NODE_ID, trackId: 'marketing', title: 'Positioning & Channels', order: 1, live: true },
+    { id: 'marketing-node-2', trackId: 'marketing', title: 'Coming soon', order: 2, live: false },
   ],
   consulting: [
-    { id: 'consulting-node-1', trackId: 'consulting', title: 'Coming soon', order: 1, live: false },
+    { id: CONSULTING_NODE_ID, trackId: 'consulting', title: 'Structured Problem-Solving', order: 1, live: true },
+    { id: 'consulting-node-2', trackId: 'consulting', title: 'Coming soon', order: 2, live: false },
   ],
   startups: [
-    { id: 'startups-node-1', trackId: 'startups', title: 'Coming soon', order: 1, live: false },
+    { id: STARTUPS_NODE_ID, trackId: 'startups', title: 'Unit Economics', order: 1, live: true },
+    { id: 'startups-node-2', trackId: 'startups', title: 'Coming soon', order: 2, live: false },
   ],
   operations: [
-    { id: 'operations-node-1', trackId: 'operations', title: 'Coming soon', order: 1, live: false },
+    { id: OPERATIONS_NODE_ID, trackId: 'operations', title: 'Process & Bottlenecks', order: 1, live: true },
+    { id: 'operations-node-2', trackId: 'operations', title: 'Coming soon', order: 2, live: false },
   ],
 };

@@ -27,8 +27,8 @@ export const EXCEL_CONCEPTS: Record<string, ConceptTeaching> = {
         { row: 6, col: 1, value: 'Fri' },
         { row: 6, col: 2, value: '70' },
       ],
-      targetCellLabel: 'B7',
-      formula: '=SUM(B2:B6)',
+      targetLabel: 'B7',
+      answer: '=SUM(B2:B6)',
       resultExplanation:
         'This adds 52 + 61 + 58 + 64 + 70 = 305 cups for the week in a single step. Now try the same idea on a different table.',
     },
@@ -63,8 +63,8 @@ export const EXCEL_CONCEPTS: Record<string, ConceptTeaching> = {
         { row: 6, col: 2, value: 'Latte' },
         { row: 6, col: 3, value: '22' },
       ],
-      targetCellLabel: 'C7',
-      formula: '=SUMIF(B2:B6,"Latte",C2:C6)',
+      targetLabel: 'C7',
+      answer: '=SUMIF(B2:B6,"Latte",C2:C6)',
       resultExplanation:
         'SUMIF checks B2:B6 for "Latte", and only adds the matching Cups Sold values: 20 + 18 + 22 = 60 lattes sold this week.',
     },
@@ -92,8 +92,8 @@ export const EXCEL_CONCEPTS: Record<string, ConceptTeaching> = {
         { row: 5, col: 1, value: 'Priya' },
         { row: 5, col: 2, value: '$6,400' },
       ],
-      targetCellLabel: 'D2',
-      formula: '=VLOOKUP("Maria",A2:B5,2,FALSE)',
+      targetLabel: 'D2',
+      answer: '=VLOOKUP("Maria",A2:B5,2,FALSE)',
       resultExplanation:
         'VLOOKUP scans A2:A5 for "Maria", finds her in row 3, then returns the value from the 2nd column of that row: $5,800. FALSE means an exact match only.',
     },

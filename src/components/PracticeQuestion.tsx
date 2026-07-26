@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import MiniSpreadsheet from './MiniSpreadsheet';
 import PrimaryButton from './PrimaryButton';
 import { radius, spacing } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
 import { LessonQuestion } from '../types';
 import { isFormulaCorrect } from '../utils/formula';
+import { isNumericCorrect } from '../utils/numeric';
 
 interface Props {
   question: LessonQuestion;
@@ -24,49 +25,151 @@ export default function PracticeQuestion({
 }: Props) {
   const { colors } = useTheme();
   const [input, setInput] = useState('');
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
+  const canCheck =
+    question.kind === 'multipleChoice' ? selectedOptionId !== null : !!input.trim();
+
   const handleCheck = async () => {
-    if (!input.trim()) return;
-    const correct = isFormulaCorrect(input, question.acceptedFormulas);
+    if (!canCheck) return;
+    let correct = false;
+    if (question.kind === 'formula') {
+      correct = isFormulaCorrect(input, question.acceptedFormulas);
+    } else if (question.kind === 'numeric') {
+      correct = isNumericCorrect(input, question.correctValue, question.tolerance);
+    } else {
+      correct = selectedOptionId === question.correctOptionId;
+    }
     await onSubmit(correct);
     setFeedback(correct ? 'correct' : 'incorrect');
   };
 
+  const correctAnswerDisplay =
+    question.kind === 'formula'
+      ? question.correctFormula
+      : question.kind === 'numeric'
+        ? `${question.targetLabel}: ${question.correctValue}${question.unit ?? ''}`
+        : question.options.find((o) => o.id === question.correctOptionId)?.text ?? '';
+
   return (
     <View style={styles.container}>
       <Text style={[styles.progress, { color: colors.textMuted }]}>{progressLabel}</Text>
+
+      {'context' in question && question.context && (
+        <Text style={[styles.context, { color: colors.textMuted }]}>{question.context}</Text>
+      )}
+
       <Text style={[styles.prompt, { color: colors.text }]}>{question.prompt}</Text>
 
-      <MiniSpreadsheet columnHeaders={question.columnHeaders} cells={question.cells} />
+      {question.kind === 'formula' && (
+        <>
+          <MiniSpreadsheet columnHeaders={question.columnHeaders} cells={question.cells} />
+          <View style={styles.inputRow}>
+            <Text style={[styles.cellLabel, { color: colors.textMuted }]}>
+              {question.targetCellLabel}
+            </Text>
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              editable={feedback === null}
+              placeholder="=SUM(...)"
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={[
+                styles.input,
+                {
+                  color: colors.text,
+                  borderColor:
+                    feedback === 'correct'
+                      ? colors.success
+                      : feedback === 'incorrect'
+                        ? colors.danger
+                        : colors.border,
+                  backgroundColor: colors.surface,
+                },
+              ]}
+            />
+          </View>
+        </>
+      )}
 
-      <View style={styles.inputRow}>
-        <Text style={[styles.cellLabel, { color: colors.textMuted }]}>
-          {question.targetCellLabel}
-        </Text>
-        <TextInput
-          value={input}
-          onChangeText={setInput}
-          editable={feedback === null}
-          placeholder="=SUM(...)"
-          placeholderTextColor={colors.textMuted}
-          autoCapitalize="none"
-          autoCorrect={false}
-          style={[
-            styles.input,
-            {
-              color: colors.text,
-              borderColor:
-                feedback === 'correct'
-                  ? colors.success
-                  : feedback === 'incorrect'
-                    ? colors.danger
-                    : colors.border,
-              backgroundColor: colors.surface,
-            },
-          ]}
-        />
-      </View>
+      {question.kind === 'numeric' && (
+        <>
+          {question.cells && question.columnHeaders && (
+            <MiniSpreadsheet columnHeaders={question.columnHeaders} cells={question.cells} />
+          )}
+          <View style={styles.inputRow}>
+            <Text style={[styles.cellLabel, { color: colors.textMuted }]}>
+              {question.targetLabel}
+            </Text>
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              editable={feedback === null}
+              placeholder="0"
+              placeholderTextColor={colors.textMuted}
+              keyboardType="numbers-and-punctuation"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={[
+                styles.input,
+                {
+                  color: colors.text,
+                  borderColor:
+                    feedback === 'correct'
+                      ? colors.success
+                      : feedback === 'incorrect'
+                        ? colors.danger
+                        : colors.border,
+                  backgroundColor: colors.surface,
+                },
+              ]}
+            />
+            {question.unit && (
+              <Text style={[styles.unit, { color: colors.textMuted }]}>{question.unit}</Text>
+            )}
+          </View>
+        </>
+      )}
+
+      {question.kind === 'multipleChoice' && (
+        <View style={styles.optionsList}>
+          {question.options.map((option) => {
+            const isSelected = selectedOptionId === option.id;
+            const isCorrectOption = option.id === question.correctOptionId;
+            const showResult = feedback !== null;
+            const borderColor = showResult
+              ? isCorrectOption
+                ? colors.success
+                : isSelected
+                  ? colors.danger
+                  : colors.border
+              : isSelected
+                ? colors.primary
+                : colors.border;
+
+            return (
+              <Pressable
+                key={option.id}
+                disabled={feedback !== null}
+                onPress={() => setSelectedOptionId(option.id)}
+                style={[
+                  styles.option,
+                  {
+                    backgroundColor: colors.surface,
+                    borderColor,
+                    borderWidth: isSelected || (showResult && isCorrectOption) ? 2 : 1,
+                  },
+                ]}
+              >
+                <Text style={[styles.optionText, { color: colors.text }]}>{option.text}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
 
       {feedback && (
         <View
@@ -86,8 +189,8 @@ export default function PracticeQuestion({
           >
             {feedback === 'correct' ? 'Correct!' : 'Not quite'}
           </Text>
-          <Text style={[styles.feedbackFormula, { color: colors.text }]}>
-            {question.correctFormula}
+          <Text style={[styles.feedbackAnswer, { color: colors.text }]}>
+            {correctAnswerDisplay}
           </Text>
           <Text style={[styles.feedbackExplanation, { color: colors.textMuted }]}>
             {question.explanation}
@@ -98,7 +201,7 @@ export default function PracticeQuestion({
       <View style={styles.spacer} />
 
       {feedback === null ? (
-        <PrimaryButton title="Check" onPress={handleCheck} disabled={!input.trim()} />
+        <PrimaryButton title="Check" onPress={handleCheck} disabled={!canCheck} />
       ) : (
         <PrimaryButton title={continueLabel} onPress={onContinue} />
       )}
@@ -115,6 +218,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginBottom: spacing.sm,
+  },
+  context: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: spacing.sm,
+    fontStyle: 'italic',
   },
   prompt: {
     fontSize: 17,
@@ -142,6 +251,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
+  unit: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  optionsList: {
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  option: {
+    padding: spacing.md,
+    borderRadius: radius.md,
+  },
+  optionText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
   feedbackBox: {
     marginTop: spacing.lg,
     padding: spacing.md,
@@ -153,10 +278,9 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginBottom: spacing.xs,
   },
-  feedbackFormula: {
+  feedbackAnswer: {
     fontSize: 15,
     fontWeight: '700',
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     marginBottom: spacing.xs,
   },
   feedbackExplanation: {

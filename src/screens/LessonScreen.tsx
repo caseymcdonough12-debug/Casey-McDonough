@@ -4,8 +4,18 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } fr
 import ConceptTeachingCard from '../components/ConceptTeachingCard';
 import PracticeQuestion from '../components/PracticeQuestion';
 import { useProgress } from '../context/ProgressContext';
+import { ACCOUNTING_CONCEPTS } from '../data/accountingConcepts';
+import { ACCOUNTING_QUESTIONS } from '../data/accountingBasics';
+import { CONSULTING_CONCEPTS } from '../data/consultingConcepts';
+import { CONSULTING_QUESTIONS } from '../data/consultingBasics';
 import { EXCEL_BASICS_QUESTIONS } from '../data/excelBasics';
 import { EXCEL_CONCEPTS } from '../data/excelConcepts';
+import { MARKETING_CONCEPTS } from '../data/marketingConcepts';
+import { MARKETING_QUESTIONS } from '../data/marketingBasics';
+import { OPERATIONS_CONCEPTS } from '../data/operationsConcepts';
+import { OPERATIONS_QUESTIONS } from '../data/operationsBasics';
+import { STARTUPS_CONCEPTS } from '../data/startupsConcepts';
+import { STARTUPS_QUESTIONS } from '../data/startupsBasics';
 import { RootStackParamList } from '../navigation/types';
 import { useTheme } from '../theme/ThemeContext';
 import { ConceptTeaching, LessonQuestion } from '../types';
@@ -14,10 +24,20 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Lesson'>;
 
 const QUESTIONS_BY_NODE: Record<string, LessonQuestion[]> = {
   'finance-excel-basics': EXCEL_BASICS_QUESTIONS,
+  'accounting-debits-credits': ACCOUNTING_QUESTIONS,
+  'marketing-positioning-channels': MARKETING_QUESTIONS,
+  'consulting-structured-problem-solving': CONSULTING_QUESTIONS,
+  'startups-unit-economics': STARTUPS_QUESTIONS,
+  'operations-process-bottlenecks': OPERATIONS_QUESTIONS,
 };
 
 const CONCEPTS_BY_NODE: Record<string, Record<string, ConceptTeaching>> = {
   'finance-excel-basics': EXCEL_CONCEPTS,
+  'accounting-debits-credits': ACCOUNTING_CONCEPTS,
+  'marketing-positioning-channels': MARKETING_CONCEPTS,
+  'consulting-structured-problem-solving': CONSULTING_CONCEPTS,
+  'startups-unit-economics': STARTUPS_CONCEPTS,
+  'operations-process-bottlenecks': OPERATIONS_CONCEPTS,
 };
 
 export default function LessonScreen({ route, navigation }: Props) {

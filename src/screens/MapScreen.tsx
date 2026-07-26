@@ -7,7 +7,7 @@ import NodeButton, { NodeStatus } from '../components/NodeButton';
 import TrackSwitcherModal from '../components/TrackSwitcherModal';
 import { useProgress } from '../context/ProgressContext';
 import { useUser } from '../context/UserContext';
-import { QUESTIONS_PER_CONCEPT } from '../data/dailyQuestions';
+import { getDailyQuestionCount } from '../data/dailyQuestions';
 import { LESSON_NODES, TRACKS } from '../data/tracks';
 import { RootStackParamList } from '../navigation/types';
 import { radius, spacing } from '../theme/colors';
@@ -35,7 +35,7 @@ export default function MapScreen() {
   const dailyPracticeUnlocked =
     track.live && !!firstLiveNode && trackProgress.completedNodeIds.includes(firstLiveNode.id);
   const dailyPracticeDoneToday = trackProgress.lastDailyPracticeDate === todayStr();
-  const dailyQuestionCount = QUESTIONS_PER_CONCEPT * 3;
+  const dailyQuestionCount = getDailyQuestionCount(trackId);
 
   const handleSelectTrack = async (newTrack: TrackId) => {
     setSwitcherVisible(false);

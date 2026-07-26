@@ -40,7 +40,7 @@ export interface LessonNode {
   live: boolean; // has real lesson content
 }
 
-export type QuestionKind = 'formula';
+export type QuestionKind = 'formula' | 'multipleChoice' | 'numeric';
 
 export interface SpreadsheetCell {
   row: number;
@@ -48,27 +48,55 @@ export interface SpreadsheetCell {
   value: string;
 }
 
-export interface LessonQuestion {
+interface BaseLessonQuestion {
   id: string;
   nodeId: string;
   conceptId: string; // groups questions so a teaching card can precede each new concept
-  kind: QuestionKind;
   difficultyTier: 1 | 2 | 3 | 4 | 5;
   prompt: string;
+  explanation: string;
+}
+
+export interface FormulaQuestion extends BaseLessonQuestion {
+  kind: 'formula';
   columnHeaders: string[];
   cells: SpreadsheetCell[];
   targetCellLabel: string; // e.g. "D2" — where the user types the formula
   acceptedFormulas: string[]; // normalized (uppercase, no spaces) accepted answers
   correctFormula: string; // canonical form to display
-  explanation: string;
 }
+
+export interface MultipleChoiceOption {
+  id: string;
+  text: string;
+}
+
+export interface MultipleChoiceQuestion extends BaseLessonQuestion {
+  kind: 'multipleChoice';
+  context?: string; // optional scenario paragraph shown above the options
+  options: MultipleChoiceOption[];
+  correctOptionId: string;
+}
+
+export interface NumericQuestion extends BaseLessonQuestion {
+  kind: 'numeric';
+  context?: string;
+  columnHeaders?: string[];
+  cells?: SpreadsheetCell[];
+  targetLabel: string; // e.g. "Gross Margin %" or "Runway (months)"
+  unit?: string; // '$', '%', 'months', 'x', etc. — shown as an input suffix
+  correctValue: number;
+  tolerance?: number; // absolute tolerance, defaults to 0.01
+}
+
+export type LessonQuestion = FormulaQuestion | MultipleChoiceQuestion | NumericQuestion;
 
 export interface ConceptExample {
   scenarioPrompt: string; // the worked example's own prompt
-  columnHeaders: string[];
-  cells: SpreadsheetCell[];
-  targetCellLabel: string;
-  formula: string;
+  columnHeaders?: string[];
+  cells?: SpreadsheetCell[];
+  targetLabel: string; // cell label, or a plain label like "Runway (months)"
+  answer: string; // formula, chosen option text, or a computed value + unit
   resultExplanation: string;
 }
 

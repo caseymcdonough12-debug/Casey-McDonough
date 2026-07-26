@@ -19,7 +19,7 @@ export default function ConceptTeachingCard({ concept, onReady }: Props) {
       style={{ flex: 1, backgroundColor: colors.background }}
       contentContainerStyle={styles.content}
     >
-      <Text style={[styles.eyebrow, { color: colors.primary }]}>New formula</Text>
+      <Text style={[styles.eyebrow, { color: colors.primary }]}>New concept</Text>
       <Text style={[styles.title, { color: colors.text }]}>{concept.title}</Text>
 
       <Text style={[styles.body, { color: colors.text }]}>{concept.whatItDoes}</Text>
@@ -41,10 +41,12 @@ export default function ConceptTeachingCard({ concept, onReady }: Props) {
       <Text style={[styles.sectionLabel, { color: colors.textMuted }]}>WORKED EXAMPLE</Text>
       <Text style={[styles.body, { color: colors.text }]}>{concept.example.scenarioPrompt}</Text>
 
-      <MiniSpreadsheet
-        columnHeaders={concept.example.columnHeaders}
-        cells={concept.example.cells}
-      />
+      {concept.example.cells && concept.example.columnHeaders && (
+        <MiniSpreadsheet
+          columnHeaders={concept.example.columnHeaders}
+          cells={concept.example.cells}
+        />
+      )}
 
       <View
         style={[
@@ -53,10 +55,10 @@ export default function ConceptTeachingCard({ concept, onReady }: Props) {
         ]}
       >
         <Text style={[styles.formulaCellLabel, { color: colors.textMuted }]}>
-          {concept.example.targetCellLabel}
+          {concept.example.targetLabel}
         </Text>
         <Text style={[styles.formulaText, { color: colors.primary }]}>
-          {concept.example.formula}
+          {concept.example.answer}
         </Text>
       </View>
       <Text style={[styles.body, { color: colors.textMuted }]}>

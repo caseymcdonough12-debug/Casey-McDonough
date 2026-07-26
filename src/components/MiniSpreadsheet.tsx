@@ -2,11 +2,11 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { radius, spacing } from '../theme/colors';
 import { useTheme } from '../theme/ThemeContext';
-import { LessonQuestion } from '../types';
+import { SpreadsheetCell } from '../types';
 
 interface Props {
   columnHeaders: string[];
-  cells: LessonQuestion['cells'];
+  cells: SpreadsheetCell[];
 }
 
 const CELL_WIDTH = 82;

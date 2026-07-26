@@ -1,4 +1,4 @@
-import { LessonQuestion } from '../types';
+import { LessonQuestion, SpreadsheetCell } from '../types';
 
 export const NODE_ID = 'finance-excel-basics';
 
@@ -13,7 +13,7 @@ const salesRows = [
 ];
 
 function salesCells() {
-  const cells: LessonQuestion['cells'] = [];
+  const cells: SpreadsheetCell[] = [];
   salesRows.forEach(({ row, item, region, units, price, revenue }) => {
     cells.push({ row, col: 1, value: item });
     cells.push({ row, col: 2, value: region });
