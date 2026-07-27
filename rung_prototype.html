@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rung — Prototype</title>
+<style>
+  :root {
+    --emerald: #10B981;
+    --emerald-dark: #059669;
+    --amber: #F59E0B;
+    --text: #111827;
+    --text-muted: #6B7280;
+    --background: #F7F8FA;
+    --surface: #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --border: #E5E7EB;
+    --locked: #D1D5DB;
+    --success: #10B981;
+    --danger: #EF4444;
+    --on-primary: #FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --emerald: #34D399;
+      --emerald-dark: #10B981;
+      --amber: #FBBF24;
+      --text: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --background: #0B1120;
+      --surface: #151C2C;
+      --surface-raised: #1C2438;
+      --border: #263248;
+      --locked: #374151;
+      --success: #34D399;
+      --danger: #F87171;
+      --on-primary: #0B1120;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #0B1120;
+    background: radial-gradient(circle at 50% 0%, #1c2438 0%, #0B1120 60%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 12px;
+  }
+  .phone {
+    width: 390px;
+    max-width: 100%;
+    height: 780px;
+    background: var(--background);
+    border-radius: 40px;
+    border: 10px solid #111827;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 22px;
+    background: #111827;
+    border-radius: 12px;
+    z-index: 50;
+  }
+  #screen {
+    flex: 1;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-top: 34px;
+  }
+  #screen::-webkit-scrollbar { display: none; }
+
+  .px { padding-left: 20px; padding-right: 20px; }
+  .pad { padding: 20px; }
+  .center { text-align: center; }
+  .row { display: flex; align-items: center; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; }
+  .gap-sm { gap: 8px; }
+  .gap-md { gap: 12px; }
+  .grow { flex: 1; }
+
+  h1.title { font-size: 24px; font-weight: 800; color: var(--text); margin: 0 0 6px; }
+  p.subtitle { font-size: 14px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.4; }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 999px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-primary { background: var(--emerald); color: var(--on-primary); }
+  .btn-primary:disabled { opacity: 0.45; cursor: default; }
+  .btn-secondary { background: transparent; color: var(--emerald); border: 1.5px solid var(--emerald); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+  }
+
+  .track-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .track-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    min-height: 116px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .track-card.selected { border-width: 2px; }
+  .track-card.dashed { border-style: dashed; }
+  .track-card .icon { font-size: 26px; display: block; margin-bottom: 8px; }
+  .track-card .name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .track-card .tagline { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
+  .option {
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .option.selected { border-color: var(--emerald); border-width: 2px; }
+  .segment-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .segment {
+    flex: 1;
+    text-align: center;
+    padding: 12px 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .segment.selected { background: var(--emerald); color: var(--on-primary); border-color: var(--emerald); }
+
+  /* Map screen */
+  .map-header { padding: 14px 20px 8px; display: flex; align-items: center; justify-content: space-between; }
+  .track-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 7px 14px; cursor: pointer;
+  }
+  .track-pill .name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .track-pill .caret { font-size: 11px; color: var(--text-muted); }
+  .stats-row { display: flex; gap: 14px; }
+  .stat { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .notice-banner {
+    margin: 0 20px 10px; padding: 10px 12px; border-radius: 12px;
+    background: var(--surface-raised); border: 1px solid var(--border);
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  .node-tree { display: flex; flex-direction: column; align-items: center; padding: 24px 0 40px; }
+  .node-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 22px; cursor: pointer; width: 120px; }
+  .node-circle {
+    width: 62px; height: 62px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #fff; margin-bottom: 6px;
+  }
+  .node-title { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; }
+  .node-title.locked { color: var(--text-muted); }
+  .node-badge { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Teach card */
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--emerald); text-transform: uppercase; margin-bottom: 10px; }
+  .chip {
+    display: inline-block; padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--emerald); background: var(--surface-raised);
+    color: var(--emerald); font-weight: 800; font-size: 16px;
+    font-family: "SF Mono", Menlo, monospace; margin-bottom: 16px;
+  }
+  .body-text { font-size: 15px; line-height: 1.5; color: var(--text); margin-bottom: 16px; }
+  .job-box {
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 16px;
+  }
+  .job-label { font-size: 11px; font-weight: 800; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+  .job-role { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .job-scenario { font-size: 14px; line-height: 1.45; color: var(--text); }
+  .tags-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+  .tags-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tag { border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; color: var(--text-muted); background: var(--background); }
+  .section-label { font-size: 11px; font-weight: 800; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+
+  table.mini-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  table.mini-table th, table.mini-table td {
+    border: 1px solid var(--border); padding: 8px 10px; font-size: 12px; text-align: left; color: var(--text);
+  }
+  table.mini-table th { background: var(--surface-raised); font-weight: 700; color: var(--text-muted); }
+
+  .answer-box {
+    display: flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--emerald); background: var(--surface-raised);
+    border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .answer-box .label { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+  .answer-box .value { font-size: 16px; font-weight: 700; color: var(--emerald); }
+
+  /* Practice */
+  .progress-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+  .scenario-tag {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--surface-raised);
+    font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .context-text { font-size: 14px; font-style: italic; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
+  .prompt-text { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+  .target-label { font-size: 13px; font-weight: 700; color: var(--text-muted); width: 100px; }
+  input.answer-input {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 12px 14px; font-size: 16px; color: var(--text); background: var(--surface);
+  }
+  input.answer-input:focus { outline: none; border-color: var(--emerald); }
+  input.answer-input.correct { border-color: var(--success); }
+  input.answer-input.incorrect { border-color: var(--danger); }
+
+  .mc-option {
+    padding: 14px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--surface); margin-bottom: 8px; font-size: 14px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+  }
+  .mc-option.selected { border-color: var(--emerald); border-width: 2px; }
+  .mc-option.correct-reveal { border-color: var(--success); border-width: 2px; }
+  .mc-option.incorrect-reveal { border-color: var(--danger); border-width: 2px; }
+
+  .feedback-box { border-radius: 12px; padding: 14px; margin: 16px 0; border: 1.5px solid; background: var(--surface-raised); }
+  .feedback-box.correct { border-color: var(--success); }
+  .feedback-box.incorrect { border-color: var(--danger); }
+  .feedback-title { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+  .feedback-title.correct { color: var(--success); }
+  .feedback-title.incorrect { color: var(--danger); }
+  .feedback-answer { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .feedback-explanation { font-size: 13px; line-height: 1.45; color: var(--text-muted); }
+
+  /* Modal (track switcher) */
+  .modal-backdrop {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: flex-end; z-index: 100;
+  }
+  .modal-sheet {
+    width: 100%; background: var(--background);
+    border-top-left-radius: 24px; border-top-right-radius: 24px;
+    padding: 20px; max-height: 78%; overflow-y: auto;
+  }
+  .modal-track-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .modal-track-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 6px; text-align: center; min-height: 78px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+  }
+  .modal-track-card.current { border-width: 2px; }
+  .modal-track-card .check { position: absolute; top: 4px; right: 6px; font-size: 12px; font-weight: 800; color: var(--emerald); }
+  .modal-track-card .icon { font-size: 20px; margin-bottom: 4px; }
+  .modal-track-card .name { font-size: 10.5px; font-weight: 700; color: var(--text); }
+
+  /* Completion */
+  .completion-stats { display: flex; gap: 10px; width: 100%; margin-bottom: 30px; }
+  .stat-card { flex: 1; border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; background: var(--surface); }
+  .stat-card .value { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .stat-card .label { font-size: 11px; color: var(--text-muted); }
+
+  .spacer { flex: 1; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div id="screen"></div>
+  </div>
+
+<script>
+// ---------------------------------------------------------------------------
+// DATA
+// ---------------------------------------------------------------------------
+
+const TRACKS = [
+  { id: 'finance', name: 'Finance', tagline: 'Statements, markets, and valuation', color: '#10B981', icon: '📊' },
+  { id: 'personalFinance', name: 'Personal Finance', tagline: 'Budgeting, saving, and big life decisions', color: '#FBBF24', icon: '🐷' },
+  { id: 'economics', name: 'Economics', tagline: 'How markets, policy, and prices work', color: '#C084FC', icon: '🏛️' },
+  { id: 'accounting', name: 'Accounting', tagline: 'Debits, credits, and financial statements', color: '#0EA5A4', icon: '🧮' },
+  { id: 'startups', name: 'Entrepreneurship', tagline: 'From pitch deck to first customers', color: '#FB923C', icon: '🚀' },
+  { id: 'consulting', name: 'Consulting', tagline: 'Frameworks and structured problem-solving', color: '#818CF8', icon: '🧩' },
+  { id: 'marketing', name: 'Marketing', tagline: 'Positioning, channels, and growth', color: '#F472B6', icon: '📣' },
+  { id: 'operations', name: 'Operations', tagline: 'Process, logistics, and efficiency', color: '#38BDF8', icon: '⚙️' },
+];
+
+const NODE_TITLES = {
+  finance: ['Reading Financial Statements', 'Stock Market 101', 'Time Value of Money & Valuation', 'Bonds & Fixed Income', 'Financial Ratios', 'Capital Structure & M&A Basics'],
+  personalFinance: ['Budgeting & Saving', 'Investing 101', 'Insurance & Healthcare Basics', 'Retirement Planning', 'Credit, Debt & Taxes', 'Big Life Decisions'],
+  economics: ['Core Economic Principles', 'Inflation, Interest Rates & Policy', 'Economic Indicators', 'Market Structures', 'International Trade & Exchange Rates', 'Behavioral Economics'],
+  accounting: ['The Accounting Cycle', 'Reading Financial Statements', 'Accrual vs. Cash Accounting', 'Budgeting & Cost Accounting', 'Payroll, Payables & Receivables', 'Depreciation, Assets & Auditing'],
+  startups: ['Pitch Deck Basics', 'Lean Startup & Product-Market Fit', 'Fundraising, Equity & Cap Tables', 'Business Model & Unit Economics', 'Legal Basics & Funding Paths', 'Pricing Strategy'],
+  consulting: ['Case Interview Basics', 'Structuring Problems', 'Frameworks & Market Sizing', 'Client & Stakeholder Communication', 'Slide Writing & Presenting', 'Project Scoping'],
+  marketing: ['Campaign Metrics & A/B Testing', 'Ad Copy Basics', 'Brand Positioning & Pricing', 'Content, SEO & Social Media', 'Market Research & Segmentation', 'Marketing Funnels & Email'],
+  operations: ['Process Mapping', 'KPI Dashboards', 'Supply Chain, Inventory & Logistics', 'Quality Control & Lean Six Sigma', 'Project Management', 'Resource & Vendor Management'],
+};
+
+// Each track's first (live) lesson: 2-3 escalating concepts, each with a teach card + 2 practice questions.
+const LESSONS = {
+  finance: [
+    {
+      skillName: 'Net Income', whatItDoes: 'A P&L (income statement) lists Revenue, subtracts Expenses, and the bottom line is Net Income — whether the company actually made money.',
+      jobRole: 'Financial Analyst', jobScenario: "You're handed a client's P&L right before a meeting and need to state their Net Income in the first thirty seconds.",
+      alsoAppliesIn: ['Small Business Owner', 'Loan Officer', 'Investor', 'Accountant'],
+      example: { prompt: "A small business's P&L shows $80,000 in Revenue and $65,000 in Total Expenses. What is Net Income?", table: [['Line Item','Amount'],['Revenue','$80,000'],['Total Expenses','$65,000']], targetLabel: 'Net Income ($)', answer: '$15,000', resultExplanation: 'Net Income = Revenue − Total Expenses = $80,000 − $65,000 = $15,000.' },
+      questions: [
+        { scenarioTag: 'Your manager asks:', prompt: "Here's this month's P&L. Revenue is $120,000 and Total Expenses are $95,000. What's our Net Income?", kind: 'numeric', targetLabel: 'Net Income ($)', correctValue: 25000, tolerance: 1, explanation: 'Net Income = Revenue − Total Expenses = $120,000 − $95,000 = $25,000.' },
+        { scenarioTag: 'A client asks:', prompt: 'Our Net Income was $18,000 and Revenue was $98,000 this month. What were our Total Expenses?', kind: 'numeric', targetLabel: 'Total Expenses ($)', correctValue: 80000, tolerance: 1, explanation: 'Total Expenses = Revenue − Net Income = $98,000 − $18,000 = $80,000.' },
+      ],
+    },
+    {
+      skillName: 'Assets = Liabilities + Equity', whatItDoes: "A balance sheet lists everything a company owns (Assets) and owes (Liabilities); what's left over is Equity.",
+      jobRole: 'Loan Officer', jobScenario: 'A business applies for a loan and you check their balance sheet to see if their assets actually cover what they owe.',
+      alsoAppliesIn: ['Investor', 'Auditor', 'Small Business Owner', 'Financial Analyst'],
+      example: { prompt: "A company's balance sheet lists $250,000 in Assets and $90,000 in Liabilities. What is Equity?", table: [['Line Item','Amount'],['Assets','$250,000'],['Liabilities','$90,000']], targetLabel: 'Equity ($)', answer: '$160,000', resultExplanation: 'Equity = Assets − Liabilities = $250,000 − $90,000 = $160,000.' },
+      questions: [
+        { scenarioTag: 'Your manager asks:', prompt: 'Check this balance sheet — Assets are $310,000 and Liabilities are $140,000. What is Equity?', kind: 'numeric', targetLabel: 'Equity ($)', correctValue: 170000, tolerance: 1, explanation: 'Equity = Assets − Liabilities = $310,000 − $140,000 = $170,000.' },
+        { scenarioTag: 'An investor asks:', prompt: 'This company reports $95,000 in Equity and $180,000 in Liabilities. What are total Assets?', kind: 'numeric', targetLabel: 'Assets ($)', correctValue: 275000, tolerance: 1, explanation: 'Assets = Liabilities + Equity = $180,000 + $95,000 = $275,000.' },
+      ],
+    },
+    {
+      skillName: 'Ending Cash Balance', whatItDoes: 'A cash flow statement starts with Beginning Cash, adds/subtracts Operating, Investing, and Financing activity, and the result is Ending Cash.',
+      jobRole: 'Controller', jobScenario: 'A company looks profitable on paper but you check the cash flow statement to see if they can actually make payroll next month.',
+      alsoAppliesIn: ['CFO', 'Investor', 'Financial Analyst', 'Small Business Owner'],
+      example: { prompt: 'Beginning Cash is $40,000. Operating added $25,000, Investing used $10,000, Financing added $5,000. What is Ending Cash?', table: [['Line Item','Amount'],['Beginning Cash','$40,000'],['Operating','+$25,000'],['Investing','−$10,000'],['Financing','+$5,000']], targetLabel: 'Ending Cash ($)', answer: '$60,000', resultExplanation: 'Ending Cash = $40,000 + $25,000 + $5,000 − $10,000 = $60,000.' },
+      questions: [
+        { scenarioTag: 'Your CFO asks:', prompt: 'Beginning Cash was $60,000. Operating added $30,000, Investing used $20,000, Financing added $0. What is Ending Cash?', kind: 'numeric', targetLabel: 'Ending Cash ($)', correctValue: 70000, tolerance: 1, explanation: 'Ending Cash = $60,000 + $30,000 − $20,000 = $70,000.' },
+        { scenarioTag: 'An auditor asks:', prompt: 'Ending Cash came out to $95,000. Beginning Cash was $50,000, Operating added $40,000, Financing added $10,000. How much cash did Investing use?', kind: 'numeric', targetLabel: 'Investing Used ($)', correctValue: 5000, tolerance: 1, explanation: 'Investing Used = $50,000 + $40,000 + $10,000 − $95,000 = $5,000.' },
+      ],
+    },
+  ],
+  personalFinance: [
+    {
+      skillName: '50/30/20 Rule', whatItDoes: 'Splits take-home pay into 50% needs, 30% wants, and 20% savings/debt payoff — a simple starting budget.',
+      jobRole: 'Financial Wellness Coach', jobScenario: 'A new hire asks how to budget their first paycheck, and you walk them through the split.',
+      alsoAppliesIn: ['HR Benefits Counselor', 'New Grad', 'Credit Counselor', 'Financial Planner'],
+      example: { prompt: 'Someone takes home $4,000/month. How much should go to Savings/Debt Payoff under 50/30/20?', table: [['Category','% of pay'],['Needs','50%'],['Wants','30%'],['Savings/Debt','20%']], targetLabel: 'Savings/Debt (20%) ($)', answer: '$800', resultExplanation: '20% of $4,000 = $800.' },
+      questions: [
+        { scenarioTag: 'A friend asks:', prompt: 'I take home $3,200 a month — how much should go to Needs under 50/30/20?', kind: 'numeric', targetLabel: 'Needs (50%) ($)', correctValue: 1600, tolerance: 1, explanation: '50% of $3,200 = $1,600.' },
+        { scenarioTag: 'A friend asks:', prompt: 'I take home $5,500 a month and want to follow 50/30/20. How much is left for Wants?', kind: 'numeric', targetLabel: 'Wants (30%) ($)', correctValue: 1650, tolerance: 1, explanation: '30% of $5,500 = $1,650.' },
+      ],
+    },
+    {
+      skillName: 'Emergency Fund Size', whatItDoes: 'Emergency Fund = Monthly Essential Expenses × Months of Coverage — so a job loss doesn\'t turn into a crisis.',
+      jobRole: 'Financial Planner', jobScenario: 'A client just got a raise and asks how big their emergency fund should be before investing the extra money.',
+      alsoAppliesIn: ['Credit Counselor', 'HR Benefits Counselor', 'New Grad', 'Financial Wellness Coach'],
+      example: { prompt: "Someone's essential expenses are $3,000/month and they want 6 months of coverage. How big should the fund be?", table: [['Input','Value'],['Monthly Expenses','$3,000'],['Months of Coverage','6']], targetLabel: 'Emergency Fund ($)', answer: '$18,000', resultExplanation: '$3,000 × 6 = $18,000.' },
+      questions: [
+        { scenarioTag: 'A friend asks:', prompt: 'My essential expenses are $2,500/month and I want 3 months of coverage. How big should my emergency fund be?', kind: 'numeric', targetLabel: 'Emergency Fund ($)', correctValue: 7500, tolerance: 1, explanation: '$2,500 × 3 = $7,500.' },
+        { scenarioTag: 'A friend asks:', prompt: 'I have $12,000 saved and want that to cover 4 months. What is the maximum monthly expense that covers?', kind: 'numeric', targetLabel: 'Max Monthly Expenses ($)', correctValue: 3000, tolerance: 1, explanation: '$12,000 ÷ 4 = $3,000.' },
+      ],
+    },
+    {
+      skillName: 'Compound Growth', whatItDoes: 'Future Value = Principal × (1 + rate) ^ years — growth accelerates the longer money stays invested.',
+      jobRole: 'Financial Planner', jobScenario: 'A 25-year-old asks whether starting to save now versus in five years actually matters.',
+      alsoAppliesIn: ['Investment Advisor', 'New Grad', 'HR Benefits Counselor', 'Retirement Counselor'],
+      example: { prompt: '$10,000 grows at 8%/year for 2 years. What is the Future Value?', table: [['Input','Value'],['Principal','$10,000'],['Rate','8%'],['Years','2']], targetLabel: 'Future Value ($)', answer: '$11,664', resultExplanation: '$10,000 × 1.08² = $11,664.' },
+      questions: [
+        { scenarioTag: 'A friend asks:', prompt: '$5,000 grows at 10%/year for 2 years. What is the Future Value?', kind: 'numeric', targetLabel: 'Future Value ($)', correctValue: 6050, tolerance: 5, explanation: '$5,000 × 1.10² = $6,050.' },
+        { scenarioTag: 'A friend asks:', prompt: '$8,000 grows at 5%/year for 3 years. What is the Future Value (nearest dollar)?', kind: 'numeric', targetLabel: 'Future Value ($)', correctValue: 9261, tolerance: 5, explanation: '$8,000 × 1.05³ ≈ $9,261.' },
+      ],
+    },
+  ],
+  economics: [
+    {
+      skillName: 'Supply & Demand', whatItDoes: 'More demand (same supply) pushes price up; more supply (same demand) pushes price down.',
+      jobRole: 'Retail Pricing Analyst', jobScenario: 'A supplier shortage hits one of your products and you need to predict what happens to price.',
+      alsoAppliesIn: ['Product Manager', 'Policy Analyst', 'Small Business Owner', 'Real Estate Agent'],
+      example: { prompt: "A hurricane cuts the region's orange supply while demand stays the same. What happens to price?", table: [['Factor','Change'],['Supply','↓ Down'],['Demand','No change']], targetLabel: 'Outcome', answer: 'Price rises', resultExplanation: 'Same demand chasing fewer oranges pushes price up.' },
+      questions: [
+        { scenarioTag: 'A retail buyer asks:', context: 'A toy manufacturer doubles production for the holidays, demand stays the same.', prompt: "What happens to the toy's price?", kind: 'multipleChoice', options: ['Price falls','Price rises','Price stays the same','Impossible to say'], correctIndex: 0, explanation: 'More supply chasing the same demand pushes price down.' },
+        { scenarioTag: 'A market analyst asks:', context: 'A health study spikes demand for a supplement, supply is fixed short-term.', prompt: 'What happens to price and quantity sold?', kind: 'multipleChoice', options: ['Price rises, quantity rises','Price falls, quantity falls','Price rises, quantity falls','Both stay the same'], correctIndex: 0, explanation: 'Demand surge against fixed supply pushes price up, and quantity still rises along the new equilibrium.' },
+      ],
+    },
+    {
+      skillName: 'Opportunity Cost', whatItDoes: 'The value of the next-best alternative you give up when you make a choice.',
+      jobRole: 'Business Owner', jobScenario: "You're deciding whether to use $50,000 in savings to expand your shop or leave it invested elsewhere.",
+      alsoAppliesIn: ['Product Manager', 'Policy Analyst', 'Personal Finance Coach', 'Investor'],
+      example: { prompt: 'Invest $20,000 for expected $3,000 profit, or leave it in an index fund expected to return $2,200. Opportunity cost of expanding?', table: [['Option','Expected Return'],['Expand business','$3,000'],['Index fund','$2,200']], targetLabel: 'Opportunity Cost ($)', answer: '$2,200', resultExplanation: 'The value of the next-best alternative given up.' },
+      questions: [
+        { scenarioTag: 'Your business partner asks:', prompt: 'We can restock (worth $400 in avoided stockouts) or run a pop-up sale (expected $650 profit). If we restock, what is the opportunity cost?', kind: 'numeric', targetLabel: 'Opportunity Cost ($)', correctValue: 650, tolerance: 1, explanation: 'The value given up: $650 from the pop-up sale.' },
+        { scenarioTag: 'Your CFO asks:', prompt: "We're choosing between Investment A ($12,000 profit) and B ($9,500 profit). If we pick A, what's the opportunity cost?", kind: 'numeric', targetLabel: 'Opportunity Cost ($)', correctValue: 9500, tolerance: 1, explanation: 'The value given up from the next-best alternative, B: $9,500.' },
+      ],
+    },
+    {
+      skillName: 'Price Elasticity of Demand', whatItDoes: 'Elasticity = %Change in Quantity ÷ %Change in Price. Above 1 means demand is sensitive to price.',
+      jobRole: 'Pricing Strategist', jobScenario: "You're deciding whether to raise prices 10% and need to know if customers will cut back enough to hurt revenue.",
+      alsoAppliesIn: ['Product Manager', 'Retail Analyst', 'Economist', 'Revenue Manager'],
+      example: { prompt: 'A 10% price increase causes quantity demanded to fall 20%. What is the elasticity?', table: [['Metric','Change'],['Price','+10%'],['Quantity','−20%']], targetLabel: 'Elasticity', answer: '2', resultExplanation: '20% ÷ 10% = 2 — demand is elastic.' },
+      questions: [
+        { prompt: 'A 5% price increase causes quantity demanded to fall by 15%. What is the elasticity?', kind: 'numeric', targetLabel: 'Elasticity', correctValue: 3, tolerance: 0.1, explanation: '15% ÷ 5% = 3.' },
+        { prompt: 'A product has elasticity of 2.5. If price rises 4%, what % drop in quantity would you expect?', kind: 'numeric', targetLabel: 'Quantity Change (%)', correctValue: 10, tolerance: 0.5, explanation: '2.5 × 4% = 10%.' },
+      ],
+    },
+  ],
+  accounting: [
+    {
+      skillName: 'Debits & Credits', whatItDoes: 'Assets and expenses increase with a debit; liabilities, equity, and revenue increase with a credit.',
+      jobRole: 'Bookkeeper', jobScenario: 'Your bookkeeping software asks whether to debit or credit each account — get it backwards and every report downstream is wrong.',
+      alsoAppliesIn: ['Staff Accountant', 'Small Business Owner', 'Auditor', 'Controller'],
+      example: { prompt: 'A customer pays $500 cash for a service. How does this affect Cash (an Asset)?', table: [['Account','Effect'],['Cash','?'],['Revenue','Credit $500']], targetLabel: 'Cash account', answer: 'Debit (increase)', resultExplanation: 'Assets increase with a debit.' },
+      questions: [
+        { context: 'A customer pays $500 cash for a service.', prompt: 'How does this affect the Cash account (an Asset)?', kind: 'multipleChoice', options: ['Debit (increase)','Credit (decrease)'], correctIndex: 0, explanation: 'Assets increase with a debit.' },
+        { context: 'A company takes out a $10,000 bank loan.', prompt: 'How does this affect Loan Payable (a Liability)?', kind: 'multipleChoice', options: ['Debit (increase)','Credit (increase)'], correctIndex: 1, explanation: 'Liabilities increase with a credit.' },
+      ],
+    },
+    {
+      skillName: 'Journal Entry', whatItDoes: 'A journal entry debits one account and credits another for the same amount — the two sides must balance.',
+      jobRole: 'Staff Accountant', jobScenario: 'A new invoice comes in and you have to record it correctly before month-end close.',
+      alsoAppliesIn: ['Bookkeeper', 'Auditor', 'Small Business Owner', 'Controller'],
+      example: { prompt: 'A company buys $3,000 of office supplies with cash. Which entry is correct?', table: [['Account','Debit','Credit'],['Office Supplies','$3,000',''],['Cash','','$3,000']], targetLabel: 'Correct entry', answer: 'Debit Office Supplies $3,000 / Credit Cash $3,000', resultExplanation: 'Supplies (asset) up = debit; Cash (asset) down = credit.' },
+      questions: [
+        { scenarioTag: 'Your controller asks:', context: "The company pays $1,200 cash for this month's rent.", prompt: 'Which journal entry is correct?', kind: 'multipleChoice', options: ['Debit Rent Expense $1,200 / Credit Cash $1,200','Debit Cash $1,200 / Credit Rent Expense $1,200','Debit Rent Expense $1,200 / Credit Accounts Payable $1,200'], correctIndex: 0, explanation: 'Rent Expense increases with a debit; Cash decreases with a credit.' },
+        { scenarioTag: 'Your controller asks:', context: 'The company provides $5,000 of services to a client on credit.', prompt: 'Which journal entry is correct?', kind: 'multipleChoice', options: ['Debit Accounts Receivable $5,000 / Credit Revenue $5,000','Debit Revenue $5,000 / Credit Accounts Receivable $5,000','Debit Cash $5,000 / Credit Revenue $5,000'], correctIndex: 0, explanation: 'No cash yet, so Accounts Receivable is debited and Revenue is credited.' },
+      ],
+    },
+    {
+      skillName: 'Assets = Liabilities + Equity', whatItDoes: 'Every company\'s books balance around this equation. Knowing two of the three lets you solve for the third.',
+      jobRole: 'Controller', jobScenario: "You're pitching investors and check that Assets minus Liabilities lines up with Equity before walking in.",
+      alsoAppliesIn: ['Auditor', 'Small Business Owner', 'Investor', 'Financial Analyst'],
+      example: { prompt: 'A small bakery has $40,000 in Assets and $15,000 in Liabilities. What is Equity?', table: [['Line Item','Amount'],['Assets','$40,000'],['Liabilities','$15,000']], targetLabel: 'Equity ($)', answer: '$25,000', resultExplanation: '$40,000 − $15,000 = $25,000.' },
+      questions: [
+        { prompt: 'A design studio has $120,000 in Assets and $45,000 in Liabilities. What is its Equity?', kind: 'numeric', targetLabel: 'Equity ($)', correctValue: 75000, tolerance: 0.5, explanation: '$120,000 − $45,000 = $75,000.' },
+        { prompt: 'A food truck has $30,000 in Equity and $18,000 in Liabilities. What are total Assets?', kind: 'numeric', targetLabel: 'Assets ($)', correctValue: 48000, tolerance: 0.5, explanation: '$18,000 + $30,000 = $48,000.' },
+      ],
+    },
+  ],
+  startups: [
+    {
+      skillName: 'Problem/Solution Framing', whatItDoes: 'A strong pitch names a specific, painful problem for a specific customer before presenting the solution.',
+      jobRole: 'Startup Founder', jobScenario: "You're rewriting your deck's second slide the night before demo day and need the problem in one sentence.",
+      alsoAppliesIn: ['Accelerator Mentor', 'Angel Investor', 'Venture Capital Associate', 'Product Manager'],
+      example: { prompt: 'Which problem statement is investor-ready for a scheduling app for freelance stylists?', table: [['Option','Quality'],['"Scheduling is hard"','Vague'],['"Stylists lose 5 hrs/week to no-shows"','Specific']], targetLabel: 'Best statement', answer: '"Independent stylists lose 5 hours/week to no-shows and phone-tag scheduling."', resultExplanation: 'Specific, quantified, names the exact pain.' },
+      questions: [
+        { scenarioTag: 'Your co-founder asks:', context: "You're pitching a meal-prep app for busy parents.", prompt: 'Which problem statement is strongest?', kind: 'multipleChoice', options: ['Cooking is hard for busy people','Parents working 50+ hour weeks spend 45 min/day just deciding what to cook','Nobody likes cooking after work'], correctIndex: 1, explanation: "It's specific and quantified — a concrete pain point." },
+        { scenarioTag: 'An investor asks:', context: "You're pitching a compliance tool for small clinics.", prompt: 'Which problem statement is strongest?', kind: 'multipleChoice', options: ['Compliance is important','Small clinics fail 2.3 compliance checks per audit, risking $18,000 fines','Healthcare has a lot of paperwork'], correctIndex: 1, explanation: 'It quantifies frequency and financial stakes.' },
+      ],
+    },
+    {
+      skillName: 'Traction Slide', whatItDoes: 'Show the metric that best proves real demand for THIS stage of the company.',
+      jobRole: 'Startup Founder', jobScenario: 'You have no revenue yet and need to pick which early signal actually convinces investors.',
+      alsoAppliesIn: ['Venture Capital Associate', 'Accelerator Mentor', 'Angel Investor', 'Growth Marketer'],
+      example: { prompt: 'A pre-launch startup has no paying customers. Which traction metric is strongest?', table: [['Signal','Strength'],['Vague interest','Weak'],['4,000-person organic waitlist, 30% open rate','Strong']], targetLabel: 'Best metric', answer: 'A 4,000-person waitlist built organically in 3 weeks', resultExplanation: 'Clear proof of real demand pre-revenue.' },
+      questions: [
+        { scenarioTag: 'An advisor asks:', context: 'A B2B SaaS startup ran a 3-month paid pilot with one enterprise customer.', prompt: 'Which traction metric is strongest?', kind: 'multipleChoice', options: ['The pilot customer renewed and expanded their contract 40%','The founders think the product is great','They have a logo on their website'], correctIndex: 0, explanation: 'A renewal plus expansion is concrete proof of value.' },
+        { scenarioTag: 'A VC asks:', context: 'A consumer app has 50,000 downloads but declining weekly active users.', prompt: 'Which metric should the founder lead with?', kind: 'multipleChoice', options: ['Total downloads (50,000)','Week-over-week retention rate, even declining','Number of employees hired'], correctIndex: 1, explanation: 'Investors care about retention, not vanity downloads.' },
+      ],
+    },
+    {
+      skillName: 'The Ask', whatItDoes: 'Raise Amount ≈ Monthly Burn × Target Runway Months.',
+      jobRole: 'Startup Founder', jobScenario: "You're finalizing your fundraising target to hit your next milestone without raising again too soon.",
+      alsoAppliesIn: ['Venture Capital Associate', 'Angel Investor', 'CFO', 'Accelerator Mentor'],
+      example: { prompt: 'A startup burns $40,000/month and wants 18 months of runway. How much should they raise?', table: [['Input','Value'],['Monthly Burn','$40,000'],['Target Runway','18 months']], targetLabel: 'Raise Amount ($)', answer: '$720,000', resultExplanation: '$40,000 × 18 = $720,000.' },
+      questions: [
+        { prompt: 'A startup burns $25,000/month and wants 12 months of runway. How much should they raise?', kind: 'numeric', targetLabel: 'Raise Amount ($)', correctValue: 300000, tolerance: 1, explanation: '$25,000 × 12 = $300,000.' },
+        { prompt: 'A startup wants to raise $900,000 for 15 months of runway. What is the max monthly burn?', kind: 'numeric', targetLabel: 'Max Monthly Burn ($)', correctValue: 60000, tolerance: 1, explanation: '$900,000 ÷ 15 = $60,000.' },
+      ],
+    },
+  ],
+  consulting: [
+    {
+      skillName: 'Answer-First Synthesis', whatItDoes: 'Lead with the recommendation first, then support it — executives want the answer in the first sentence.',
+      jobRole: 'Management Consultant', jobScenario: "You have 30 seconds in an elevator with the client's CEO to summarize your recommendation.",
+      alsoAppliesIn: ['Corporate Strategy Analyst', 'MBA Case Prep Coach', 'Product Strategist', 'Investment Banker'],
+      example: { prompt: 'Which summary is a stronger answer-first synthesis of a cost-cutting recommendation?', table: [['Style','Example'],['Weak','"We looked at a lot of data..."'],['Strong','"We recommend closing 3 stores, saving $2M/yr"']], targetLabel: 'Best synthesis', answer: '"We recommend closing 3 underperforming stores, saving $2M annually — here\'s why."', resultExplanation: 'States recommendation and impact immediately.' },
+      questions: [
+        { scenarioTag: 'Your engagement manager asks:', context: "You've finished analyzing why a retailer's profits declined.", prompt: 'Which opening line is strongest?', kind: 'multipleChoice', options: ['So we looked at a lot of data over the past few weeks...','Profit declined because online competitors cut prices 15% — we recommend matching prices on our top 20 SKUs to recover $3M','Let me walk you through our full analysis first'], correctIndex: 1, explanation: 'States cause, recommendation, and dollar impact immediately.' },
+        { scenarioTag: 'A partner asks:', context: "Summarize a go/no-go acquisition recommendation to the board.", prompt: 'Which opening line is strongest?', kind: 'multipleChoice', options: ['We recommend proceeding — it adds $50M in annual synergies within 2 years','Acquisitions are complex and there are many considerations','Let\'s start with some background on the target'], correctIndex: 0, explanation: 'Leads with the recommendation and the key number.' },
+      ],
+    },
+    {
+      skillName: 'MECE', whatItDoes: 'Mutually Exclusive, Collectively Exhaustive — categories that don\'t overlap and don\'t miss anything.',
+      jobRole: 'Management Consultant', jobScenario: "You're building the first slide of an issue tree and need to check your categories don't overlap.",
+      alsoAppliesIn: ['Corporate Strategy Analyst', 'Product Strategist', 'MBA Case Prep Coach', 'Business Analyst'],
+      example: { prompt: 'Which breakdown of "reasons revenue declined" is MECE?', table: [['Breakdown','MECE?'],['Pricing issues vs. Competitive issues','No — overlaps'],['Price decline vs. Volume decline vs. Mix shift','Yes']], targetLabel: 'Best breakdown', answer: 'Price decline vs. Volume decline vs. Mix shift', resultExplanation: 'No overlap, covers all reasons revenue could change.' },
+      questions: [
+        { scenarioTag: 'Your team lead asks:', context: 'Structuring "why did customer churn increase."', prompt: 'Which breakdown is MECE?', kind: 'multipleChoice', options: ['Product vs. Price vs. Service vs. Competitive issues (overlap)','Dissatisfaction churn vs. competitor-offer churn vs. need-disappeared churn','Bad customers vs. good customers'], correctIndex: 1, explanation: 'Non-overlapping, collectively exhaustive reasons.' },
+        { scenarioTag: 'A client asks:', context: 'Structuring "how can we cut costs" for a manufacturer.', prompt: 'Which breakdown is MECE?', kind: 'multipleChoice', options: ['Labor vs. Material vs. Overhead vs. Everything else','Fixed costs vs. Variable costs','Cutting people vs. perks vs. benefits (overlap)'], correctIndex: 1, explanation: 'Every cost is either fixed or variable, no overlap.' },
+      ],
+    },
+    {
+      skillName: 'Hypothesis-Driven Approach', whatItDoes: 'Form a specific, testable hypothesis first, then gather only the data needed to prove or disprove it.',
+      jobRole: 'Management Consultant', jobScenario: "Your team has one week to find why a client's plant is underperforming — you can't test everything.",
+      alsoAppliesIn: ['Corporate Strategy Analyst', 'Data Analyst', 'Product Strategist', 'MBA Case Prep Coach'],
+      example: { prompt: 'Online sales dropped sharply last month. Which is the strongest hypothesis to test first?', table: [['Hypothesis','Testable?'],['"Something changed"','No'],['"Site redesign broke mobile checkout"','Yes']], targetLabel: 'Best hypothesis', answer: 'Sales dropped because a site redesign broke the mobile checkout flow', resultExplanation: 'Specific, testable within a day, tied to a real change.' },
+      questions: [
+        { scenarioTag: 'Your manager asks:', context: "A restaurant chain's sales dropped 8% right after a competitor opened nearby.", prompt: 'Which is the strongest first hypothesis?', kind: 'multipleChoice', options: ['Something is generally wrong with our restaurants','The new competitor is pulling customers away during overlapping peak hours','People just don\'t like eating out anymore'], correctIndex: 1, explanation: 'Specific, tied to a real recent change, testable.' },
+        { scenarioTag: 'A partner asks:', context: "A SaaS client's churn spiked on the cheapest tier right after a support restaffing.", prompt: 'Which is the strongest first hypothesis?', kind: 'multipleChoice', options: ['Cheap-tier customers were never staying long-term anyway','Support response times worsened for that tier after restaffing','The whole product is declining in quality'], correctIndex: 1, explanation: 'Links two facts that happened together into one testable cause.' },
+      ],
+    },
+  ],
+  marketing: [
+    {
+      skillName: 'CAC', whatItDoes: 'CAC = Total Acquisition Spend ÷ New Customers Acquired.',
+      jobRole: 'Growth Marketer', jobScenario: 'Your CMO wants to know if a new ad channel is worth scaling.',
+      alsoAppliesIn: ['Performance Marketing Manager', 'Startup Founder', 'Marketing Analyst', 'Growth Product Manager'],
+      example: { prompt: 'A campaign spent $8,000 and acquired 160 new customers. What is the CAC?', table: [['Input','Value'],['Spend','$8,000'],['New Customers','160']], targetLabel: 'CAC ($)', answer: '$50', resultExplanation: '$8,000 ÷ 160 = $50.' },
+      questions: [
+        { scenarioTag: 'Your CMO asks:', prompt: 'We spent $12,000 and it brought in 300 new customers. What is our CAC?', kind: 'numeric', targetLabel: 'CAC ($)', correctValue: 40, tolerance: 0.5, explanation: '$12,000 ÷ 300 = $40.' },
+        { scenarioTag: 'Your CMO asks:', prompt: 'We want to keep CAC at $60 with a $9,000 budget. How many new customers do we need?', kind: 'numeric', targetLabel: 'Required New Customers', correctValue: 150, tolerance: 1, explanation: '$9,000 ÷ $60 = 150.' },
+      ],
+    },
+    {
+      skillName: 'LTV', whatItDoes: 'LTV = Average Purchase Value × Purchase Frequency (per year) × Average Customer Lifespan (years).',
+      jobRole: 'Marketing Analyst', jobScenario: 'Finance needs LTV to decide how much marketing budget to approve next year.',
+      alsoAppliesIn: ['Growth Marketer', 'Startup Founder', 'CFO', 'Product Manager'],
+      example: { prompt: 'A customer spends $50/purchase, buys 4x/year, stays 3 years. What is their LTV?', table: [['Input','Value'],['Avg Purchase','$50'],['Frequency','4/yr'],['Lifespan','3 yrs']], targetLabel: 'LTV ($)', answer: '$600', resultExplanation: '$50 × 4 × 3 = $600.' },
+      questions: [
+        { prompt: 'A customer spends $80/purchase, buys 3x/year, stays 2 years. What is their LTV?', kind: 'numeric', targetLabel: 'LTV ($)', correctValue: 480, tolerance: 1, explanation: '$80 × 3 × 2 = $480.' },
+        { prompt: 'A product has LTV of $900, customers buy 3x/year for 2.5 years. What is the average purchase value?', kind: 'numeric', targetLabel: 'Avg Purchase Value ($)', correctValue: 120, tolerance: 1, explanation: '$900 ÷ (3 × 2.5) = $120.' },
+      ],
+    },
+    {
+      skillName: 'ROAS', whatItDoes: 'ROAS = Revenue from Ads ÷ Ad Spend. A ROAS of 4 means $4 back for every $1 spent.',
+      jobRole: 'Performance Marketing Manager', jobScenario: "You're deciding whether to increase budget on a campaign — ROAS tells you if it's profitable to scale.",
+      alsoAppliesIn: ['Growth Marketer', 'E-commerce Manager', 'CFO', 'Marketing Analyst'],
+      example: { prompt: 'A campaign spent $4,000 and generated $18,000 in revenue. What is the ROAS?', table: [['Input','Value'],['Ad Spend','$4,000'],['Revenue','$18,000']], targetLabel: 'ROAS (x)', answer: '4.5x', resultExplanation: '$18,000 ÷ $4,000 = 4.5.' },
+      questions: [
+        { prompt: 'A campaign spent $2,500 and generated $12,500 in revenue. What is the ROAS?', kind: 'numeric', targetLabel: 'ROAS (x)', correctValue: 5, tolerance: 0.1, explanation: '$12,500 ÷ $2,500 = 5.' },
+        { prompt: 'A team wants a ROAS of at least 6 with $30,000 in ad revenue. What is the max ad spend?', kind: 'numeric', targetLabel: 'Max Ad Spend ($)', correctValue: 5000, tolerance: 1, explanation: '$30,000 ÷ 6 = $5,000.' },
+      ],
+    },
+  ],
+  operations: [
+    {
+      skillName: 'Process Sequencing', whatItDoes: 'Mapping a process means laying out every step in the actual order work happens.',
+      jobRole: 'Process Improvement Analyst', jobScenario: "You're documenting how an order actually moves through the warehouse before proposing changes.",
+      alsoAppliesIn: ['Operations Manager', 'Manufacturing Supervisor', 'Business Analyst', 'Six Sigma Green Belt'],
+      example: { prompt: 'A customer order: Pick items, Pack items, Receive order, Ship order. Correct sequence?', table: [['Step','Order'],['Receive order','1'],['Pick items','2'],['Pack items','3'],['Ship order','4']], targetLabel: 'Correct sequence', answer: 'Receive → Pick → Pack → Ship', resultExplanation: "Can't pick/pack before receiving; can't ship before packing." },
+      questions: [
+        { scenarioTag: 'Your ops manager asks:', context: 'A return: Restock item, Inspect item, Receive return, Issue refund (out of order).', prompt: 'What is the correct sequence?', kind: 'multipleChoice', options: ['Receive → Inspect → Refund → Restock','Restock → Receive → Inspect → Refund','Refund → Receive → Inspect → Restock'], correctIndex: 0, explanation: 'Receive before inspecting, refund before restocking.' },
+        { scenarioTag: 'A new hire asks:', context: 'Manufacturing: Quality check, Assemble parts, Procure materials, Ship (out of order).', prompt: 'What is the correct sequence?', kind: 'multipleChoice', options: ['Procure → Assemble → Quality check → Ship','Assemble → Procure → Ship → Quality check','Quality check → Procure → Ship → Assemble'], correctIndex: 0, explanation: 'Materials before assembly, quality check before shipping.' },
+      ],
+    },
+    {
+      skillName: 'Value-Added vs. Non-Value-Added', whatItDoes: 'A value-added step is one the customer would pay for; a non-value-added step just adds delay or cost.',
+      jobRole: 'Operations Manager', jobScenario: "You're mapping a process to find what to cut first.",
+      alsoAppliesIn: ['Six Sigma Black Belt', 'Process Improvement Analyst', 'Manufacturing Supervisor', 'Lean Consultant'],
+      example: { prompt: 'In order fulfillment, which step is non-value-added?', table: [['Step','Value?'],['Picking the item','Value-added'],['Sitting 2 days for manual approval','Non-value-added']], targetLabel: 'Non-value-added step', answer: 'The order sits in a queue for 2 days waiting for approval', resultExplanation: "The customer doesn't benefit from waiting." },
+      questions: [
+        { scenarioTag: 'A Six Sigma coach asks:', context: "In a hospital's patient intake, which step is non-value-added?", prompt: 'Which step is non-value-added?', kind: 'multipleChoice', options: ["A nurse records symptoms and vitals","Paperwork sits in an inbox for 45 minutes","A doctor examines the patient"], correctIndex: 1, explanation: 'Untouched paperwork adds time without benefiting the patient.' },
+        { scenarioTag: 'An ops director asks:', context: "In a software deployment process, which step is non-value-added?", prompt: 'Which step is non-value-added?', kind: 'multipleChoice', options: ['Automated tests run against the code','Code waits for sign-off from someone on vacation','The code is deployed to production'], correctIndex: 1, explanation: 'Waiting on an unavailable approver is pure delay.' },
+      ],
+    },
+    {
+      skillName: 'Finding the Bottleneck', whatItDoes: 'The slowest step in a process caps how much the whole process can produce.',
+      jobRole: 'Operations Manager', jobScenario: "You're running a print shop and customers complain about slow turnaround — you need to find what's actually slow.",
+      alsoAppliesIn: ['Manufacturing Supervisor', 'Process Improvement Analyst', 'Six Sigma Green Belt', 'Supply Chain Manager'],
+      example: { prompt: "A sandwich shop preps 40/hr, toasts 30/hr, wraps 50/hr. What's the bottleneck?", table: [['Step','Capacity'],['Prep','40/hr'],['Toast','30/hr'],['Wrap','50/hr']], targetLabel: 'Bottleneck', answer: 'Toasting (30/hour)', resultExplanation: 'The whole line moves as fast as its slowest station.' },
+      questions: [
+        { context: 'A t-shirt shop: Design 60/hr, Print 45/hr, Fold/Pack 80/hr.', prompt: 'Which step is the bottleneck?', kind: 'multipleChoice', options: ['Design','Print','Fold/Pack','No bottleneck'], correctIndex: 1, explanation: 'Print has the lowest capacity, capping output.' },
+        { context: 'A bakery: Mixing 100/hr, Baking 40/hr, Packaging 90/hr. Owner doubles mixing to 200/hr.', prompt: 'What happens to total output?', kind: 'multipleChoice', options: ['Output doubles','Output stays capped at 40/hr — baking is the bottleneck','Output increases to 90/hr'], correctIndex: 1, explanation: 'Mixing was never the bottleneck — baking was.' },
+      ],
+    },
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// STATE
+// ---------------------------------------------------------------------------
+
+const STORAGE_KEY = 'rungPrototypeState';
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {
+    onboarded: false,
+    currentTrack: 'finance',
+    progress: {},
+  };
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let state = loadState();
+
+function getProgress(trackId) {
+  if (!state.progress[trackId]) {
+    state.progress[trackId] = { xp: 0, streak: 0, lastActiveDate: null, completedNodes: [] };
+  }
+  return state.progress[trackId];
+}
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function daysBetween(a, b) {
+  return Math.round((new Date(a+'T00:00:00') - new Date(b+'T00:00:00')) / 86400000);
+}
+function recordActivity(trackId) {
+  const p = getProgress(trackId);
+  const today = todayStr();
+  if (p.lastActiveDate === today) { /* no change */ }
+  else if (p.lastActiveDate && daysBetween(today, p.lastActiveDate) === 1) { p.streak += 1; p.lastActiveDate = today; }
+  else { p.streak = 1; p.lastActiveDate = today; }
+}
+function displayStreak(trackId) {
+  const p = getProgress(trackId);
+  if (!p.lastActiveDate) return 0;
+  if (daysBetween(todayStr(), p.lastActiveDate) > 1) return 0;
+  return p.streak;
+}
+
+// ---------------------------------------------------------------------------
+// NAV / RENDER
+// ---------------------------------------------------------------------------
+
+let nav = { screen: 'trackSelect' };
+let onboardingSelection = null;
+let lifeStageSelection = null;
+let experienceSelection = null;
+let lessonSession = null; // { trackId, conceptIndex, phase: 'teach'|'practice', qIndex, correctCount, xpEarned, answered, selectedOption }
+let switcherOpen = false;
+
+const screenEl = document.getElementById('screen');
+
+function go(screen, extra) {
+  nav = Object.assign({ screen }, extra || {});
+  render();
+}
+
+function render() {
+  switcherOpen = false;
+  if (!state.onboarded) {
+    if (nav.screen === 'lifeStage') renderLifeStage();
+    else renderTrackSelect();
+    return;
+  }
+  switch (nav.screen) {
+    case 'map': renderMap(); break;
+    case 'lesson': renderLesson(); break;
+    case 'completion': renderCompletion(); break;
+    default: renderMap();
+  }
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ---- Onboarding ----
+
+function renderTrackSelect() {
+  const cards = TRACKS.map(t => `
+    <div class="track-card ${onboardingSelection === t.id ? 'selected' : ''}" style="${onboardingSelection===t.id ? 'border-color:'+t.color : ''}" onclick="selectOnboardingTrack('${t.id}')">
+      <span class="icon">${t.icon}</span>
+      <div class="name">${esc(t.name)}</div>
+      <div class="tagline">${esc(t.tagline)}</div>
+    </div>
+  `).join('');
+
+  screenEl.innerHTML = `
+    <div class="pad" style="display:flex; flex-direction:column; height:100%;">
+      <h1 class="title">What part of the business world do you want to learn?</h1>
+      <p class="subtitle">Pick a track to start with. You can switch anytime.</p>
+      <div class="track-grid">
+        ${cards}
+        <div class="track-card dashed ${onboardingSelection==='__notsure__' ? 'selected' : ''}" onclick="selectOnboardingTrack('__notsure__')">
+          <span class="icon">🤔</span>
+          <div class="name">Not sure yet</div>
+          <div class="tagline">Explore a bit of everything</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" ${onboardingSelection ? '' : 'disabled'} onclick="go('lifeStage')">Continue</button>
+    </div>
+  `;
+}
+window.selectOnboardingTrack = function(id) { onboardingSelection = id; renderTrackSelect(); };
+
+function renderLifeStage() {
+  const stages = [['figuring','Still figuring it out'],['major','I know my major'],['soon','Starting a job soon'],['curious','Just curious']];
+  const exps = [['none','None'],['1-3','1–3 years'],['4+','4+ years']];
+  screenEl.innerHTML = `
+    <div class="pad" style="display:flex; flex-direction:column; height:100%;">
+      <h1 class="title" style="font-size:20px;">Where are you in your work life right now?</h1>
+      <div style="margin-bottom:20px;">
+        ${stages.map(([id,label]) => `<div class="option ${lifeStageSelection===id?'selected':''}" onclick="selectLifeStage('${id}')">${label}</div>`).join('')}
+      </div>
+      <h1 class="title" style="font-size:20px;">Roughly how much work experience do you have?</h1>
+      <div class="segment-row">
+        ${exps.map(([id,label]) => `<div class="segment ${experienceSelection===id?'selected':''}" onclick="selectExperience('${id}')">${label}</div>`).join('')}
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" ${(lifeStageSelection && experienceSelection) ? '' : 'disabled'} onclick="completeOnboarding()">Start learning</button>
+    </div>
+  `;
+}
+window.selectLifeStage = function(id) { lifeStageSelection = id; renderLifeStage(); };
+window.selectExperience = function(id) { experienceSelection = id; renderLifeStage(); };
+window.completeOnboarding = function() {
+  state.onboarded = true;
+  state.currentTrack = onboardingSelection === '__notsure__' ? 'finance' : onboardingSelection;
+  saveState();
+  go('map');
+};
+
+// ---- Map ----
+
+function renderMap() {
+  const trackId = state.currentTrack;
+  const track = TRACKS.find(t => t.id === trackId);
+  const nodes = NODE_TITLES[trackId];
+  const p = getProgress(trackId);
+  const streak = displayStreak(trackId);
+
+  const nodeRows = nodes.map((title, i) => {
+    const completed = p.completedNodes.includes(i);
+    const prevCompleted = i === 0 || p.completedNodes.includes(i - 1);
+    const isLive = i === 0;
+    let status = completed ? 'completed' : (prevCompleted ? 'unlocked' : 'locked');
+    let circleColor = status === 'completed' ? 'var(--success)' : (status === 'unlocked' && isLive ? track.color : 'var(--locked)');
+    let icon = status === 'completed' ? '✓' : status === 'locked' ? '🔒' : (isLive ? (i+1) : '⏳');
+    const badge = (status !== 'locked' && !isLive) ? '<div class="node-badge">Coming soon</div>' : '';
+    return `
+      <div class="node-row" onclick="tapNode(${i}, ${isLive}, '${status}')">
+        <div class="node-circle" style="background:${circleColor};">${icon}</div>
+        <div class="node-title ${status==='locked'?'locked':''}">${esc(title)}</div>
+        ${badge}
+      </div>
+    `;
+  }).join('');
+
+  screenEl.innerHTML = `
+    <div class="map-header">
+      <div class="track-pill" onclick="openSwitcher()">
+        <span>${track.icon}</span>
+        <span class="name">${esc(track.name)}</span>
+        <span class="caret">▾</span>
+      </div>
+      <div class="stats-row">
+        <div class="stat">⚡ ${p.xp} XP</div>
+        <div class="stat">🔥 ${streak}</div>
+      </div>
+    </div>
+    <div class="node-tree">${nodeRows}</div>
+    ${switcherOpen ? renderSwitcherModal() : ''}
+  `;
+}
+
+window.tapNode = function(index, isLive, status) {
+  if (status === 'locked') return;
+  if (!isLive) { alert('Coming soon — this lesson is still being built.'); return; }
+  startLesson(state.currentTrack);
+};
+
+window.openSwitcher = function() { switcherOpen = true; renderMap(); };
+window.closeSwitcher = function() { switcherOpen = false; renderMap(); };
+window.switchTrack = function(trackId) {
+  state.currentTrack = trackId;
+  saveState();
+  switcherOpen = false;
+  renderMap();
+};
+
+function renderSwitcherModal() {
+  const cards = TRACKS.map(t => `
+    <div class="modal-track-card ${state.currentTrack===t.id?'current':''}" style="${state.currentTrack===t.id ? 'border-color:'+t.color : ''}" onclick="switchTrack('${t.id}')">
+      ${state.currentTrack===t.id ? '<span class="check">✓</span>' : ''}
+      <span class="icon">${t.icon}</span>
+      <span class="name">${esc(t.name)}</span>
+    </div>
+  `).join('');
+  return `
+    <div class="modal-backdrop" onclick="closeSwitcher()">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <h1 class="title" style="font-size:18px;">Switch track</h1>
+        <div class="modal-track-grid">${cards}</div>
+        <button class="btn btn-secondary" style="margin-top:16px;" onclick="closeSwitcher()">Close</button>
+      </div>
+    </div>
+  `;
+}
+
+// ---- Lesson (teach + practice) ----
+
+function startLesson(trackId) {
+  lessonSession = { trackId, conceptIndex: 0, phase: 'teach', qIndex: 0, correctCount: 0, totalCount: 0, xpEarned: 0, answered: false, selectedOption: null };
+  go('lesson');
+}
+
+function renderLesson() {
+  const { trackId, conceptIndex, phase } = lessonSession;
+  const concepts = LESSONS[trackId];
+  const concept = concepts[conceptIndex];
+  if (phase === 'teach') renderTeachCard(concept);
+  else renderPractice(concept);
+}
+
+function renderTeachCard(concept) {
+  const tableRows = concept.example.table.map((row, i) => {
+    const tag = i === 0 ? 'th' : 'td';
+    return `<tr>${row.map(cell => `<${tag}>${esc(cell)}</${tag}>`).join('')}</tr>`;
+  }).join('');
+  const tags = concept.alsoAppliesIn.map(r => `<span class="tag">${esc(r)}</span>`).join('');
+
+  screenEl.innerHTML = `
+    <div class="pad">
+      <div class="eyebrow">New skill</div>
+      <div class="chip">${esc(concept.skillName)}</div>
+      <p class="body-text">${esc(concept.whatItDoes)}</p>
+
+      <div class="job-box">
+        <div class="job-label">On the job</div>
+        <div class="job-role">${esc(concept.jobRole)}</div>
+        <div class="job-scenario">${esc(concept.jobScenario)}</div>
+      </div>
+
+      <div class="tags-label">Also comes up in:</div>
+      <div class="tags-list">${tags}</div>
+
+      <div class="section-label">Worked example</div>
+      <p class="body-text">${esc(concept.example.prompt)}</p>
+      <table class="mini-table">${tableRows}</table>
+
+      <div class="answer-box">
+        <span class="label">${esc(concept.example.targetLabel)}</span>
+        <span class="value">${esc(concept.example.answer)}</span>
+      </div>
+      <p class="body-text" style="color:var(--text-muted); font-size:13px;">${esc(concept.example.resultExplanation)}</p>
+
+      <button class="btn btn-primary" style="margin-top:20px;" onclick="beginPractice()">Try it yourself</button>
+    </div>
+  `;
+}
+
+window.beginPractice = function() {
+  lessonSession.phase = 'practice';
+  lessonSession.qIndex = 0;
+  lessonSession.answered = false;
+  lessonSession.selectedOption = null;
+  render();
+};
+
+function totalQuestions() {
+  return LESSONS[lessonSession.trackId].reduce((sum, c) => sum + c.questions.length, 0);
+}
+function globalQuestionNumber() {
+  const { trackId, conceptIndex, qIndex } = lessonSession;
+  let n = 0;
+  for (let i = 0; i < conceptIndex; i++) n += LESSONS[trackId][i].questions.length;
+  return n + qIndex + 1;
+}
+
+function renderPractice(concept) {
+  const q = concept.questions[lessonSession.qIndex];
+  const answered = lessonSession.answered;
+  const isLastQInConcept = lessonSession.qIndex === concept.questions.length - 1;
+  const isLastConcept = lessonSession.conceptIndex === LESSONS[lessonSession.trackId].length - 1;
+  const isFinal = isLastQInConcept && isLastConcept;
+
+  let interactive = '';
+  if (q.kind === 'numeric') {
+    const cls = answered ? (lessonSession.lastCorrect ? 'correct' : 'incorrect') : '';
+    interactive = `
+      <div class="row gap-md" style="margin-bottom:10px;">
+        <span class="target-label">${esc(q.targetLabel)}</span>
+        <input id="answerInput" class="answer-input ${cls}" type="text" inputmode="decimal" placeholder="0" ${answered?'disabled':''} />
+      </div>
+    `;
+  } else {
+    interactive = q.options.map((opt, i) => {
+      let cls = lessonSession.selectedOption === i ? 'selected' : '';
+      if (answered) {
+        if (i === q.correctIndex) cls += ' correct-reveal';
+        else if (i === lessonSession.selectedOption) cls += ' incorrect-reveal';
+      }
+      return `<div class="mc-option ${cls}" onclick="${answered?'':'selectOption('+i+')'}">${esc(opt)}</div>`;
+    }).join('');
+  }
+
+  const feedback = answered ? `
+    <div class="feedback-box ${lessonSession.lastCorrect ? 'correct' : 'incorrect'}">
+      <div class="feedback-title ${lessonSession.lastCorrect ? 'correct' : 'incorrect'}">${lessonSession.lastCorrect ? 'Correct!' : 'Not quite'}</div>
+      <div class="feedback-answer">${q.kind === 'numeric' ? esc(q.targetLabel) + ': ' + q.correctValue : esc(q.options[q.correctIndex])}</div>
+      <div class="feedback-explanation">${esc(q.explanation)}</div>
+    </div>
+  ` : '';
+
+  const continueLabel = isFinal ? 'Finish lesson' : (isLastQInConcept ? 'Continue' : 'Next question');
+
+  screenEl.innerHTML = `
+    <div class="pad">
+      <div class="progress-label">Question ${globalQuestionNumber()} of ${totalQuestions()}</div>
+      ${q.scenarioTag ? `<div class="scenario-tag">${esc(q.scenarioTag)}</div><br/>` : ''}
+      ${q.context ? `<div class="context-text">${esc(q.context)}</div>` : ''}
+      <div class="prompt-text">${esc(q.prompt)}</div>
+      ${interactive}
+      ${feedback}
+      <button class="btn btn-primary" style="margin-top:14px;" id="actionBtn" onclick="${answered ? 'continuePractice()' : 'checkAnswer()'}" ${answered?'':'disabled'} >
+        ${answered ? continueLabel : 'Check'}
+      </button>
+    </div>
+  `;
+
+  if (q.kind === 'numeric' && !answered) {
+    const input = document.getElementById('answerInput');
+    input.addEventListener('input', () => {
+      document.getElementById('actionBtn').disabled = !input.value.trim();
+    });
+  }
+}
+
+window.selectOption = function(i) {
+  lessonSession.selectedOption = i;
+  renderPractice(LESSONS[lessonSession.trackId][lessonSession.conceptIndex]);
+  document.getElementById('actionBtn').disabled = false;
+};
+
+window.checkAnswer = function() {
+  const concept = LESSONS[lessonSession.trackId][lessonSession.conceptIndex];
+  const q = concept.questions[lessonSession.qIndex];
+  let correct = false;
+  if (q.kind === 'numeric') {
+    const raw = document.getElementById('answerInput').value;
+    const parsed = parseFloat(raw.replace(/[$,%x]/gi, ''));
+    correct = !isNaN(parsed) && Math.abs(parsed - q.correctValue) <= (q.tolerance || 0.01);
+  } else {
+    correct = lessonSession.selectedOption === q.correctIndex;
+  }
+  lessonSession.answered = true;
+  lessonSession.lastCorrect = correct;
+  lessonSession.totalCount += 1;
+  if (correct) {
+    lessonSession.correctCount += 1;
+    lessonSession.xpEarned += 10;
+    const p = getProgress(lessonSession.trackId);
+    p.xp += 10;
+  }
+  recordActivity(lessonSession.trackId);
+  saveState();
+  renderPractice(concept);
+};
+
+window.continuePractice = function() {
+  const { trackId } = lessonSession;
+  const concepts = LESSONS[trackId];
+  const concept = concepts[lessonSession.conceptIndex];
+  const isLastQInConcept = lessonSession.qIndex === concept.questions.length - 1;
+  const isLastConcept = lessonSession.conceptIndex === concepts.length - 1;
+
+  if (isLastQInConcept && isLastConcept) {
+    const p = getProgress(trackId);
+    if (!p.completedNodes.includes(0)) p.completedNodes.push(0);
+    saveState();
+    go('completion');
+    return;
+  }
+  if (isLastQInConcept) {
+    lessonSession.conceptIndex += 1;
+    lessonSession.qIndex = 0;
+    lessonSession.phase = 'teach';
+    lessonSession.answered = false;
+    lessonSession.selectedOption = null;
+  } else {
+    lessonSession.qIndex += 1;
+    lessonSession.answered = false;
+    lessonSession.selectedOption = null;
+  }
+  render();
+};
+
+// ---- Completion ----
+
+function renderCompletion() {
+  const { trackId, xpEarned, correctCount, totalCount } = lessonSession;
+  const p = getProgress(trackId);
+  const streak = displayStreak(trackId);
+  const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+
+  screenEl.innerHTML = `
+    <div class="pad center" style="display:flex; flex-direction:column; height:100%; align-items:center;">
+      <div style="font-size:56px; margin-bottom:12px;">🎉</div>
+      <h1 class="title">Lesson complete!</h1>
+      <div style="height:20px;"></div>
+      <div class="completion-stats">
+        <div class="stat-card"><div class="value" style="color:var(--amber);">+${xpEarned}</div><div class="label">XP earned</div></div>
+        <div class="stat-card"><div class="value">🔥 ${streak}</div><div class="label">day streak</div></div>
+        <div class="stat-card"><div class="value">${accuracy}%</div><div class="label">accuracy</div></div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" onclick="go('map')">Continue</button>
+    </div>
+  `;
+}
+
+// ---------------------------------------------------------------------------
+// INIT
+// ---------------------------------------------------------------------------
+render();
+</script>
+</body>
+</html>
