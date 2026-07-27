@@ -339,35 +339,47 @@ const generateElasticityQuestion: Generator = (rng, id) => {
 // Accounting: debit/credit (templates) / journal entries (pool) / equation (numeric)
 // ---------------------------------------------------------------------------
 
+const ACCOUNTING_BUSINESS_NAMES = [
+  { name: 'Bright Bakery', type: 'a bakery' },
+  { name: 'Luxe Cuts', type: 'a hair salon' },
+  { name: 'Northstar Design', type: 'a design studio' },
+  { name: 'Clearview Marketing', type: 'a marketing agency' },
+  { name: 'Rolling Wheels', type: 'a food truck business' },
+  { name: 'Summit Hardware', type: 'a hardware store' },
+];
+
 interface DebitCreditTemplate {
   tier: 1 | 2 | 3 | 4 | 5;
-  build: (amt: number) => { context: string; prompt: string; correct: 'debit' | 'credit'; explanation: string };
+  build: (
+    amt: number,
+    business: string
+  ) => { context: string; prompt: string; correct: 'debit' | 'credit'; explanation: string };
 }
 
 const DEBIT_CREDIT_TEMPLATES: DebitCreditTemplate[] = [
   {
     tier: 1,
-    build: (amt) => ({
-      context: `A customer pays $${amt.toLocaleString()} cash for services.`,
-      prompt: 'How does this affect the Cash account (an Asset)?',
+    build: (amt, business) => ({
+      context: `${business} just finished a job for a walk-in customer, who pays $${amt.toLocaleString()} in cash on the spot.`,
+      prompt: `How does this affect ${business}'s Cash account (an Asset)?`,
       correct: 'debit',
       explanation: `Assets increase with a debit, so Cash is debited $${amt.toLocaleString()}.`,
     }),
   },
   {
     tier: 2,
-    build: (amt) => ({
-      context: `A company takes out a $${amt.toLocaleString()} bank loan.`,
-      prompt: 'How does this affect the Loan Payable account (a Liability)?',
+    build: (amt, business) => ({
+      context: `${business} takes out a $${amt.toLocaleString()} loan from its bank to cover a big purchase.`,
+      prompt: `How does this affect ${business}'s Loan Payable account (a Liability)?`,
       correct: 'credit',
       explanation: `Liabilities increase with a credit, so Loan Payable is credited $${amt.toLocaleString()}.`,
     }),
   },
   {
     tier: 3,
-    build: (amt) => ({
-      context: `The company pays $${amt.toLocaleString()} cash toward an existing loan.`,
-      prompt: 'How does this affect the Cash account (an Asset)?',
+    build: (amt, business) => ({
+      context: `${business} pays $${amt.toLocaleString()} cash toward the loan balance it owes.`,
+      prompt: `How does this affect ${business}'s Cash account (an Asset)?`,
       correct: 'credit',
       explanation: `Cash is decreasing, and assets decrease with a credit, so Cash is credited $${amt.toLocaleString()}.`,
     }),
@@ -376,8 +388,9 @@ const DEBIT_CREDIT_TEMPLATES: DebitCreditTemplate[] = [
 
 const generateDebitCreditQuestion: Generator = (rng, id) => {
   const template = pick(rng, DEBIT_CREDIT_TEMPLATES);
+  const business = pick(rng, ACCOUNTING_BUSINESS_NAMES).name;
   const amt = randInt(rng, 1, 50) * 100;
-  const built = template.build(amt);
+  const built = template.build(amt, business);
   return {
     id,
     nodeId: DAILY_PRACTICE_NODE_ID,
@@ -399,7 +412,7 @@ const JOURNAL_ENTRY_POOL: ScenarioTemplate[] = [
   {
     tier: 2,
     scenarioTag: 'Your controller asks:',
-    context: "The company pays $1,200 cash for this month's rent.",
+    context: "You're recording transactions for Bright Bakery. This month, Bright Bakery pays $1,200 cash for the rent on its storefront.",
     prompt: 'Which journal entry is correct?',
     options: [
       { id: 'a', text: 'Debit Rent Expense $1,200 / Credit Cash $1,200' },
@@ -413,8 +426,8 @@ const JOURNAL_ENTRY_POOL: ScenarioTemplate[] = [
   {
     tier: 4,
     scenarioTag: 'Your controller asks:',
-    context: 'The company provides $5,000 of services to a client on credit (the client will pay later).',
-    prompt: 'Which journal entry is correct?',
+    context: "Clearview Marketing, a small marketing agency, finishes a $5,000 project for a client. The client won't pay the invoice for another 30 days (i.e. the sale is on credit).",
+    prompt: 'Which journal entry is correct for Clearview Marketing?',
     options: [
       { id: 'a', text: 'Debit Accounts Receivable $5,000 / Credit Revenue $5,000' },
       { id: 'b', text: 'Debit Revenue $5,000 / Credit Accounts Receivable $5,000' },
@@ -427,8 +440,8 @@ const JOURNAL_ENTRY_POOL: ScenarioTemplate[] = [
   {
     tier: 3,
     scenarioTag: 'A bookkeeper asks:',
-    context: 'The company buys $3,000 of office supplies with cash.',
-    prompt: 'Which journal entry is correct?',
+    context: 'Summit Hardware buys $3,000 of office supplies with cash.',
+    prompt: 'Which journal entry is correct for Summit Hardware?',
     options: [
       { id: 'a', text: 'Debit Office Supplies $3,000 / Credit Cash $3,000' },
       { id: 'b', text: 'Debit Cash $3,000 / Credit Office Supplies $3,000' },
@@ -441,7 +454,7 @@ const JOURNAL_ENTRY_POOL: ScenarioTemplate[] = [
 ];
 
 const generateAccountingEquationQuestion: Generator = (rng, id) => {
-  const business = pick(rng, BUSINESS_NOUNS);
+  const business = pick(rng, ACCOUNTING_BUSINESS_NAMES);
   const liabilities = randInt(rng, 10, 200) * 1000;
   const equity = randInt(rng, 10, 300) * 1000;
   const assets = liabilities + equity;
@@ -454,7 +467,7 @@ const generateAccountingEquationQuestion: Generator = (rng, id) => {
       conceptId: 'accounting-equation',
       kind: 'numeric',
       difficultyTier: 3,
-      prompt: `A ${business} has $${assets.toLocaleString()} in Assets and $${liabilities.toLocaleString()} in Liabilities. What is its Equity?`,
+      prompt: `${business.name}, ${business.type}, has $${assets.toLocaleString()} in Assets and $${liabilities.toLocaleString()} in Liabilities. What is ${business.name}'s Equity?`,
       targetLabel: 'Equity ($)',
       correctValue: equity,
       tolerance: 0.5,
@@ -467,7 +480,7 @@ const generateAccountingEquationQuestion: Generator = (rng, id) => {
     conceptId: 'accounting-equation',
     kind: 'numeric',
     difficultyTier: 4,
-    prompt: `A ${business} has $${equity.toLocaleString()} in Equity and $${liabilities.toLocaleString()} in Liabilities. What are its total Assets?`,
+    prompt: `${business.name}, ${business.type}, has $${equity.toLocaleString()} in Equity and $${liabilities.toLocaleString()} in Liabilities. What are ${business.name}'s total Assets?`,
     targetLabel: 'Assets ($)',
     correctValue: assets,
     tolerance: 0.5,

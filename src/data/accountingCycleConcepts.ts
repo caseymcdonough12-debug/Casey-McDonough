@@ -14,7 +14,7 @@ export const ACCOUNTING_CYCLE_CONCEPTS: Record<string, ConceptTeaching> = {
       'Your bookkeeping software asks whether to debit or credit each account on a transaction — get this backwards and it silently throws off every report downstream.',
     alsoAppliesIn: ['Staff Accountant', 'Small Business Owner', 'Auditor', 'Controller'],
     example: {
-      scenarioPrompt: 'A customer pays $500 cash for a service. How does this affect the Cash account (an Asset)?',
+      scenarioPrompt: "Luxe Cuts, a hair salon, gets paid $500 in cash by a customer for a haircut. How does this affect Luxe Cuts's Cash account (an Asset)?",
       targetLabel: 'Cash account',
       answer: 'Debit (increase)',
       resultExplanation:
@@ -33,7 +33,7 @@ export const ACCOUNTING_CYCLE_CONCEPTS: Record<string, ConceptTeaching> = {
       "A new invoice comes in and you have to record it correctly in the books before month-end close, or every report after it will be wrong.",
     alsoAppliesIn: ['Bookkeeper', 'Auditor', 'Small Business Owner', 'Controller'],
     example: {
-      scenarioPrompt: 'A company buys $3,000 of office supplies with cash. Which journal entry is correct?',
+      scenarioPrompt: 'Bright Bakery buys $3,000 of office supplies with cash. Which journal entry is correct for Bright Bakery?',
       targetLabel: 'Correct entry',
       answer: 'Debit Office Supplies $3,000 / Credit Cash $3,000',
       resultExplanation:
@@ -52,7 +52,7 @@ export const ACCOUNTING_CYCLE_CONCEPTS: Record<string, ConceptTeaching> = {
       "You're pitching investors and they ask what the company is worth on paper. You check that Assets minus Liabilities lines up with Equity before you even walk into the room.",
     alsoAppliesIn: ['Auditor', 'Small Business Owner', 'Investor', 'Financial Analyst'],
     example: {
-      scenarioPrompt: 'A small bakery has $40,000 in Assets and $15,000 in Liabilities. What is its Equity?',
+      scenarioPrompt: "Sunrise Bakery has $40,000 in Assets and $15,000 in Liabilities. What is Sunrise Bakery's Equity?",
       targetLabel: 'Equity ($)',
       answer: '$25,000',
       resultExplanation:
