@@ -14,7 +14,7 @@ export const FINANCE_STATEMENTS_CONCEPTS: Record<string, ConceptTeaching> = {
       "You're handed a client's P&L right before a meeting and need to state their Net Income in the first thirty seconds, not calculate it live in front of them.",
     alsoAppliesIn: ['Small Business Owner', 'Loan Officer', 'Investor', 'Accountant'],
     example: {
-      scenarioPrompt: "A small business's P&L shows $80,000 in Revenue and $65,000 in Total Expenses. What is Net Income?",
+      scenarioPrompt: "Meridian Consulting's P&L shows $80,000 in Revenue and $65,000 in Total Expenses. What is Net Income?",
       columnHeaders: ['Line Item', 'Amount'],
       cells: [
         { row: 2, col: 1, value: 'Revenue' },
@@ -39,7 +39,7 @@ export const FINANCE_STATEMENTS_CONCEPTS: Record<string, ConceptTeaching> = {
       "A business applies for a loan and you check their balance sheet to see if their assets actually cover what they owe before approving anything.",
     alsoAppliesIn: ['Investor', 'Auditor', 'Small Business Owner', 'Financial Analyst'],
     example: {
-      scenarioPrompt: "A company's balance sheet lists $250,000 in Assets and $90,000 in Liabilities. What is Equity?",
+      scenarioPrompt: "Vantage Retail Group's balance sheet lists $250,000 in Assets and $90,000 in Liabilities. What is Equity?",
       columnHeaders: ['Line Item', 'Amount'],
       cells: [
         { row: 2, col: 1, value: 'Assets' },
@@ -65,7 +65,7 @@ export const FINANCE_STATEMENTS_CONCEPTS: Record<string, ConceptTeaching> = {
     alsoAppliesIn: ['CFO', 'Investor', 'Financial Analyst', 'Small Business Owner'],
     example: {
       scenarioPrompt:
-        'Beginning Cash is $40,000. Operating activities added $25,000, Investing activities used $10,000, and Financing activities added $5,000. What is Ending Cash?',
+        "Harborview Manufacturing's Beginning Cash is $40,000. Operating activities added $25,000, Investing activities used $10,000, and Financing activities added $5,000. What is Ending Cash?",
       columnHeaders: ['Line Item', 'Amount'],
       cells: [
         { row: 2, col: 1, value: 'Beginning Cash' },

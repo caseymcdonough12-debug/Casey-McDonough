@@ -37,12 +37,14 @@ const generateScenarioQuestion =
 
 const BUSINESS_NOUNS = ['bakery', 'design studio', 'hardware store', 'auto shop', 'gym', 'salon', 'bookstore'];
 
+const FINANCE_BUSINESS_NAMES = ['Meridian Consulting', 'Vantage Retail Group', 'Harborview Manufacturing', 'Crestline Logistics', 'Bluepeak Software'];
+
 // ---------------------------------------------------------------------------
 // Finance: reading a P&L / balance sheet / cash flow statement (numeric)
 // ---------------------------------------------------------------------------
 
 const generatePlReadingQuestion: Generator = (rng, id) => {
-  const business = pick(rng, BUSINESS_NOUNS);
+  const business = pick(rng, FINANCE_BUSINESS_NAMES);
   const revenue = randInt(rng, 40, 400) * 1000;
   const netIncome = randInt(rng, 5, 60) * 1000;
   const expenses = revenue - netIncome;
@@ -56,7 +58,7 @@ const generatePlReadingQuestion: Generator = (rng, id) => {
       kind: 'numeric',
       difficultyTier: 1,
       scenarioTag: 'Your manager asks:',
-      prompt: `Here's this month's P&L for a ${business}. Revenue is $${revenue.toLocaleString()} and Total Expenses are $${expenses.toLocaleString()}. What's Net Income?`,
+      prompt: `Here's this month's P&L for ${business}. Revenue is $${revenue.toLocaleString()} and Total Expenses are $${expenses.toLocaleString()}. What's ${business}'s Net Income?`,
       targetLabel: 'Net Income ($)',
       correctValue: netIncome,
       tolerance: 1,
@@ -70,7 +72,7 @@ const generatePlReadingQuestion: Generator = (rng, id) => {
     kind: 'numeric',
     difficultyTier: 2,
     scenarioTag: 'A client asks:',
-    prompt: `Our Net Income was $${netIncome.toLocaleString()} and Revenue was $${revenue.toLocaleString()} this month. What were our Total Expenses?`,
+    prompt: `${business}'s Net Income was $${netIncome.toLocaleString()} and Revenue was $${revenue.toLocaleString()} this month. What were ${business}'s Total Expenses?`,
     targetLabel: 'Total Expenses ($)',
     correctValue: expenses,
     tolerance: 1,
@@ -79,6 +81,7 @@ const generatePlReadingQuestion: Generator = (rng, id) => {
 };
 
 const generateBalanceSheetReadingQuestion: Generator = (rng, id) => {
+  const business = pick(rng, FINANCE_BUSINESS_NAMES);
   const liabilities = randInt(rng, 20, 200) * 1000;
   const equity = randInt(rng, 20, 300) * 1000;
   const assets = liabilities + equity;
@@ -92,7 +95,7 @@ const generateBalanceSheetReadingQuestion: Generator = (rng, id) => {
       kind: 'numeric',
       difficultyTier: 3,
       scenarioTag: 'Your manager asks:',
-      prompt: `Check this balance sheet — Assets are $${assets.toLocaleString()} and Liabilities are $${liabilities.toLocaleString()}. What is Equity?`,
+      prompt: `Check ${business}'s balance sheet — Assets are $${assets.toLocaleString()} and Liabilities are $${liabilities.toLocaleString()}. What is ${business}'s Equity?`,
       targetLabel: 'Equity ($)',
       correctValue: equity,
       tolerance: 1,
@@ -106,7 +109,7 @@ const generateBalanceSheetReadingQuestion: Generator = (rng, id) => {
     kind: 'numeric',
     difficultyTier: 4,
     scenarioTag: 'An investor asks:',
-    prompt: `This company reports $${equity.toLocaleString()} in Equity and $${liabilities.toLocaleString()} in Liabilities. What are total Assets?`,
+    prompt: `${business} reports $${equity.toLocaleString()} in Equity and $${liabilities.toLocaleString()} in Liabilities. What are ${business}'s total Assets?`,
     targetLabel: 'Assets ($)',
     correctValue: assets,
     tolerance: 1,
@@ -115,6 +118,7 @@ const generateBalanceSheetReadingQuestion: Generator = (rng, id) => {
 };
 
 const generateCashFlowReadingQuestion: Generator = (rng, id) => {
+  const business = pick(rng, FINANCE_BUSINESS_NAMES);
   const beginningCash = randInt(rng, 20, 100) * 1000;
   const operating = randInt(rng, 10, 60) * 1000;
   const investing = randInt(rng, 5, 40) * 1000;
@@ -130,7 +134,7 @@ const generateCashFlowReadingQuestion: Generator = (rng, id) => {
       kind: 'numeric',
       difficultyTier: 4,
       scenarioTag: 'Your CFO asks:',
-      prompt: `Beginning Cash was $${beginningCash.toLocaleString()}. Operating activities added $${operating.toLocaleString()}, Investing activities used $${investing.toLocaleString()}, and Financing activities added $${financing.toLocaleString()}. What is Ending Cash?`,
+      prompt: `Beginning Cash for ${business} was $${beginningCash.toLocaleString()}. Operating activities added $${operating.toLocaleString()}, Investing activities used $${investing.toLocaleString()}, and Financing activities added $${financing.toLocaleString()}. What is ${business}'s Ending Cash?`,
       targetLabel: 'Ending Cash ($)',
       correctValue: endingCash,
       tolerance: 1,
@@ -144,7 +148,7 @@ const generateCashFlowReadingQuestion: Generator = (rng, id) => {
     kind: 'numeric',
     difficultyTier: 5,
     scenarioTag: 'An auditor asks:',
-    prompt: `Ending Cash came out to $${endingCash.toLocaleString()}. Beginning Cash was $${beginningCash.toLocaleString()}, Operating added $${operating.toLocaleString()}, and Financing added $${financing.toLocaleString()}. How much cash did Investing activities use?`,
+    prompt: `${business}'s Ending Cash came out to $${endingCash.toLocaleString()}. Beginning Cash was $${beginningCash.toLocaleString()}, Operating added $${operating.toLocaleString()}, and Financing added $${financing.toLocaleString()}. How much cash did Investing activities use?`,
     targetLabel: 'Investing Activities Used ($)',
     correctValue: investing,
     tolerance: 1,
@@ -527,7 +531,7 @@ const TRACTION_SLIDE_POOL: ScenarioTemplate[] = [
   {
     tier: 2,
     scenarioTag: 'An advisor asks:',
-    context: 'A B2B SaaS startup has run a 3-month paid pilot with one enterprise customer.',
+    context: 'Vantage SaaS has run a 3-month paid pilot with one enterprise customer.',
     prompt: 'Which traction metric is strongest for the slide?',
     options: [
       { id: 'a', text: 'The pilot customer renewed and expanded their contract by 40% after the trial' },
@@ -541,7 +545,7 @@ const TRACTION_SLIDE_POOL: ScenarioTemplate[] = [
   {
     tier: 4,
     scenarioTag: 'A VC asks:',
-    context: 'A consumer app has been live for 6 months with 50,000 downloads but declining weekly active users.',
+    context: 'Loopline, a consumer app, has been live for 6 months with 50,000 downloads but declining weekly active users.',
     prompt: 'Which traction metric should the founder lead with?',
     options: [
       { id: 'a', text: 'Total downloads (50,000)' },
@@ -596,7 +600,7 @@ const ANSWER_FIRST_POOL: ScenarioTemplate[] = [
   {
     tier: 1,
     scenarioTag: 'Your engagement manager asks:',
-    context: "You've finished analyzing why a retailer's profits declined.",
+    context: "You've finished analyzing why Solstice Retail's profits declined.",
     prompt: 'Which opening line is the strongest answer-first synthesis?',
     options: [
       { id: 'a', text: 'So we looked at a lot of data over the past few weeks and found some interesting things...' },
@@ -610,7 +614,7 @@ const ANSWER_FIRST_POOL: ScenarioTemplate[] = [
   {
     tier: 3,
     scenarioTag: 'A partner asks:',
-    context: "You need to summarize a go/no-go recommendation on an acquisition to the client's board.",
+    context: "Your client, Meridian Capital, is deciding whether to acquire Ferrum Industrial. You need to summarize your go/no-go recommendation to Meridian's board.",
     prompt: 'Which opening line is strongest?',
     options: [
       { id: 'a', text: 'We recommend proceeding with the acquisition at the proposed price — it adds $50M in annual synergies within 2 years' },
@@ -627,7 +631,7 @@ const MECE_POOL: ScenarioTemplate[] = [
   {
     tier: 2,
     scenarioTag: 'Your team lead asks:',
-    context: 'You are structuring an issue tree for "why did customer churn increase."',
+    context: 'Your client Brightline Software wants an issue tree for "why did customer churn increase."',
     prompt: 'Which breakdown is MECE?',
     options: [
       { id: 'a', text: 'Product issues vs. Price issues vs. Service issues vs. Competitive issues (these can overlap)' },
@@ -641,7 +645,7 @@ const MECE_POOL: ScenarioTemplate[] = [
   {
     tier: 4,
     scenarioTag: 'A client asks:',
-    context: 'You are structuring "how can we cut costs" for a manufacturing client.',
+    context: 'Your client Ironclad Manufacturing wants a breakdown of "how can we cut costs."',
     prompt: 'Which breakdown is MECE?',
     options: [
       { id: 'a', text: 'Labor costs vs. Material costs vs. Overhead costs vs. Everything else' },
@@ -658,7 +662,7 @@ const HYPOTHESIS_DRIVEN_POOL: ScenarioTemplate[] = [
   {
     tier: 3,
     scenarioTag: 'Your manager asks:',
-    context: "A restaurant chain's same-store sales dropped 8% last quarter, right after a new regional competitor opened nearby.",
+    context: "Farmhouse Grill, a restaurant chain, saw same-store sales drop 8% last quarter, right after a new regional competitor opened nearby.",
     prompt: 'Which is the strongest first hypothesis to test?',
     options: [
       { id: 'a', text: 'Something is generally wrong with our restaurants' },
@@ -672,7 +676,7 @@ const HYPOTHESIS_DRIVEN_POOL: ScenarioTemplate[] = [
   {
     tier: 5,
     scenarioTag: 'A partner asks:',
-    context: "A SaaS client's churn spiked specifically among customers on their cheapest pricing tier, right after a support-team restaffing.",
+    context: "Brightline Software's churn spiked specifically among customers on their cheapest pricing tier, right after a support-team restaffing.",
     prompt: 'Which is the strongest first hypothesis to test?',
     options: [
       { id: 'a', text: 'The cheap-tier customers were never going to stay long-term anyway' },
@@ -803,7 +807,7 @@ const PROCESS_SEQUENCING_POOL: ScenarioTemplate[] = [
   {
     tier: 1,
     scenarioTag: 'Your ops manager asks:',
-    context: 'A returned item goes through these steps, listed out of order: Restock item, Inspect item, Receive return, Issue refund.',
+    context: 'At Northfield Retail, a returned item goes through these steps, listed out of order: Restock item, Inspect item, Receive return, Issue refund.',
     prompt: 'What is the correct sequence?',
     options: [
       { id: 'a', text: 'Receive return → Inspect item → Issue refund → Restock item' },
@@ -817,7 +821,7 @@ const PROCESS_SEQUENCING_POOL: ScenarioTemplate[] = [
   {
     tier: 2,
     scenarioTag: 'A new hire asks:',
-    context: 'A manufacturing order goes through these steps, listed out of order: Quality check, Assemble parts, Procure raw materials, Ship to customer.',
+    context: 'At Vertex Manufacturing, an order goes through these steps, listed out of order: Quality check, Assemble parts, Procure raw materials, Ship to customer.',
     prompt: 'What is the correct sequence?',
     options: [
       { id: 'a', text: 'Procure raw materials → Assemble parts → Quality check → Ship to customer' },
@@ -834,7 +838,7 @@ const VALUE_ADDED_POOL: ScenarioTemplate[] = [
   {
     tier: 2,
     scenarioTag: 'A Six Sigma coach asks:',
-    context: "In a hospital's patient intake process, which step is non-value-added?",
+    context: "In Riverside Medical Center's patient intake process, which step is non-value-added?",
     prompt: 'Which step is non-value-added?',
     options: [
       { id: 'a', text: "A nurse records the patient's symptoms and vitals" },
@@ -848,7 +852,7 @@ const VALUE_ADDED_POOL: ScenarioTemplate[] = [
   {
     tier: 3,
     scenarioTag: 'An ops director asks:',
-    context: "In a software company's deployment process, which step is non-value-added?",
+    context: "In Nimbus Software's deployment process, which step is non-value-added?",
     prompt: 'Which step is non-value-added?',
     options: [
       { id: 'a', text: 'Automated tests run against the new code' },

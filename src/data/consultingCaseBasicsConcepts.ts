@@ -14,7 +14,7 @@ export const CONSULTING_CASE_BASICS_CONCEPTS: Record<string, ConceptTeaching> = 
       "You have 30 seconds in an elevator with the client's CEO and need to summarize your team's recommendation before the doors open.",
     alsoAppliesIn: ['Corporate Strategy Analyst', 'MBA Case Prep Coach', 'Product Strategist', 'Investment Banker'],
     example: {
-      scenarioPrompt: 'Which summary is a stronger answer-first synthesis of a cost-cutting recommendation?',
+      scenarioPrompt: 'Which summary is a stronger answer-first synthesis of a cost-cutting recommendation for Atlas Retail?',
       targetLabel: 'Best synthesis',
       answer: '"We recommend closing 3 underperforming stores, saving $2M annually — here\'s why."',
       resultExplanation:
@@ -33,7 +33,7 @@ export const CONSULTING_CASE_BASICS_CONCEPTS: Record<string, ConceptTeaching> = 
       "You're building the first slide of an issue tree and need to check that your categories don't overlap before your team spends two weeks analyzing them.",
     alsoAppliesIn: ['Corporate Strategy Analyst', 'Product Strategist', 'MBA Case Prep Coach', 'Business Analyst'],
     example: {
-      scenarioPrompt: 'Which breakdown of "reasons revenue declined" is MECE?',
+      scenarioPrompt: 'Fairview Electronics wants to know "why did revenue decline." Which breakdown is MECE?',
       targetLabel: 'Best breakdown',
       answer: 'Price decline vs. Volume decline vs. Mix shift',
       resultExplanation:
@@ -52,7 +52,7 @@ export const CONSULTING_CASE_BASICS_CONCEPTS: Record<string, ConceptTeaching> = 
       "Your team has one week to figure out why a client's plant is underperforming, and you can't analyze every possible cause — you need to pick the most likely one and test it first.",
     alsoAppliesIn: ['Corporate Strategy Analyst', 'Data Analyst', 'Product Strategist', 'MBA Case Prep Coach'],
     example: {
-      scenarioPrompt: 'A client\'s online sales dropped sharply last month. Which is the strongest initial hypothesis to test first?',
+      scenarioPrompt: "Fairview Electronics' online sales dropped sharply last month. Which is the strongest initial hypothesis to test first?",
       targetLabel: 'Best starting hypothesis',
       answer: '"Sales dropped because a site redesign launched last month broke the checkout flow on mobile."',
       resultExplanation:

@@ -14,7 +14,7 @@ export const OPERATIONS_PROCESS_MAPPING_CONCEPTS: Record<string, ConceptTeaching
       "You're documenting how an order actually moves through the warehouse before proposing any changes, since the official process and the real one rarely match.",
     alsoAppliesIn: ['Operations Manager', 'Manufacturing Supervisor', 'Business Analyst', 'Six Sigma Green Belt'],
     example: {
-      scenarioPrompt: 'A customer order goes through, listed out of order: Pick items, Pack items, Receive order, Ship order. What is the correct sequence?',
+      scenarioPrompt: "At Northfield Retail, a customer order goes through, listed out of order: Pick items, Pack items, Receive order, Ship order. What is the correct sequence?",
       targetLabel: 'Correct sequence',
       answer: 'Receive order → Pick items → Pack items → Ship order',
       resultExplanation:
@@ -33,7 +33,7 @@ export const OPERATIONS_PROCESS_MAPPING_CONCEPTS: Record<string, ConceptTeaching
       "You're mapping a process to find what to cut first, and separating the steps that create real value from the ones that just create delay tells you where to focus.",
     alsoAppliesIn: ['Six Sigma Black Belt', 'Process Improvement Analyst', 'Manufacturing Supervisor', 'Lean Consultant'],
     example: {
-      scenarioPrompt: 'In an order fulfillment process, which step is non-value-added?',
+      scenarioPrompt: "In Northfield Retail's order fulfillment process, which step is non-value-added?",
       targetLabel: 'Non-value-added step',
       answer: "The order sits in a queue for 2 days waiting for a manager's manual approval",
       resultExplanation:
@@ -52,7 +52,7 @@ export const OPERATIONS_PROCESS_MAPPING_CONCEPTS: Record<string, ConceptTeaching
       "You're running a small print shop with printing, cutting, and packaging stations, and customers are complaining about slow turnaround. Before buying a faster printer, you need to know whether printing is actually what's slowing everything down.",
     alsoAppliesIn: ['Manufacturing Supervisor', 'Process Improvement Analyst', 'Six Sigma Green Belt', 'Supply Chain Manager'],
     example: {
-      scenarioPrompt: "A sandwich shop's line can prep 40 sandwiches/hour, toast 30/hour, and wrap 50/hour. What is the bottleneck?",
+      scenarioPrompt: "Corner Deli's sandwich line can prep 40 sandwiches/hour, toast 30/hour, and wrap 50/hour. What is the bottleneck?",
       targetLabel: 'Bottleneck step',
       answer: 'Toasting (30/hour)',
       resultExplanation:

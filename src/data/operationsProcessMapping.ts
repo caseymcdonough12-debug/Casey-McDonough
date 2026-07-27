@@ -10,7 +10,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 1,
     scenarioTag: 'Your ops manager asks:',
-    context: 'A returned item goes through these steps, listed out of order: Restock item, Inspect item, Receive return, Issue refund.',
+    context: 'At Northfield Retail, a returned item goes through these steps, listed out of order: Restock item, Inspect item, Receive return, Issue refund.',
     prompt: 'What is the correct sequence?',
     options: [
       { id: 'a', text: 'Receive return → Inspect item → Issue refund → Restock item' },
@@ -29,7 +29,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 2,
     scenarioTag: 'A new hire asks:',
-    context: 'A manufacturing order goes through these steps, listed out of order: Quality check, Assemble parts, Procure raw materials, Ship to customer.',
+    context: 'At Vertex Manufacturing, an order goes through these steps, listed out of order: Quality check, Assemble parts, Procure raw materials, Ship to customer.',
     prompt: 'What is the correct sequence?',
     options: [
       { id: 'a', text: 'Procure raw materials → Assemble parts → Quality check → Ship to customer' },
@@ -48,7 +48,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 2,
     scenarioTag: 'A Six Sigma coach asks:',
-    context: "In a hospital's patient intake process, which step is non-value-added?",
+    context: "In Riverside Medical Center's patient intake process, which step is non-value-added?",
     prompt: 'Which step is non-value-added?',
     options: [
       { id: 'a', text: "A nurse records the patient's symptoms and vitals" },
@@ -67,7 +67,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 3,
     scenarioTag: 'An ops director asks:',
-    context: "In a software company's deployment process, which step is non-value-added?",
+    context: "In Nimbus Software's deployment process, which step is non-value-added?",
     prompt: 'Which step is non-value-added?',
     options: [
       { id: 'a', text: 'Automated tests run against the new code' },
@@ -85,7 +85,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     conceptId: 'bottleneck-identification',
     kind: 'multipleChoice',
     difficultyTier: 3,
-    context: 'A t-shirt printing shop can design 60 shirts/hour, print 45 shirts/hour, and fold/pack 80 shirts/hour.',
+    context: 'Prints Express, a t-shirt printing shop, can design 60 shirts/hour, print 45 shirts/hour, and fold/pack 80 shirts/hour.',
     prompt: 'Which step is the bottleneck?',
     options: [
       { id: 'a', text: 'Design' },
@@ -103,7 +103,7 @@ export const OPERATIONS_PROCESS_MAPPING_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 4,
     context:
-      "A bakery's dough-mixing station handles 100 loaves/hour, baking handles 40 loaves/hour, and packaging handles 90 loaves/hour. The owner doubles mixing capacity to 200 loaves/hour.",
+      "Golden Crust Bakery's dough-mixing station handles 100 loaves/hour, baking handles 40 loaves/hour, and packaging handles 90 loaves/hour. The owner doubles mixing capacity to 200 loaves/hour.",
     prompt: 'What happens to total output?',
     options: [
       { id: 'a', text: 'Output doubles' },

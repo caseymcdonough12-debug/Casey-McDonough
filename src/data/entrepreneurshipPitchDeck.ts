@@ -47,7 +47,7 @@ export const ENTREPRENEURSHIP_PITCH_DECK_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 2,
     scenarioTag: 'An advisor asks:',
-    context: 'A B2B SaaS startup has run a 3-month paid pilot with one enterprise customer.',
+    context: 'Vantage SaaS has run a 3-month paid pilot with one enterprise customer.',
     prompt: 'Which traction metric is strongest for the slide?',
     options: [
       { id: 'a', text: 'The pilot customer renewed and expanded their contract by 40% after the trial' },
@@ -66,7 +66,7 @@ export const ENTREPRENEURSHIP_PITCH_DECK_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 4,
     scenarioTag: 'A VC asks:',
-    context: 'A consumer app has been live for 6 months with 50,000 downloads but declining weekly active users.',
+    context: 'Loopline, a consumer app, has been live for 6 months with 50,000 downloads but declining weekly active users.',
     prompt: 'Which traction metric should the founder lead with?',
     options: [
       { id: 'a', text: 'Total downloads (50,000)' },

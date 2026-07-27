@@ -10,7 +10,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 1,
     scenarioTag: 'Your engagement manager asks:',
-    context: "You've finished analyzing why a retailer's profits declined.",
+    context: "You've finished analyzing why Atlas Retail's profits declined.",
     prompt: 'Which opening line is the strongest answer-first synthesis?',
     options: [
       { id: 'a', text: 'So we looked at a lot of data over the past few weeks and found some interesting things...' },
@@ -28,7 +28,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 3,
     scenarioTag: 'A partner asks:',
-    context: "You need to summarize a go/no-go recommendation on an acquisition to the client's board.",
+    context: "Your client, Beacon Capital Partners, is deciding whether to acquire Ferrum Industrial. You need to summarize your go/no-go recommendation to Beacon's board.",
     prompt: 'Which opening line is strongest?',
     options: [
       { id: 'a', text: 'We recommend proceeding with the acquisition at the proposed price — it adds $50M in annual synergies within 2 years' },
@@ -46,7 +46,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 2,
     scenarioTag: 'Your team lead asks:',
-    context: 'You are structuring an issue tree for "why did customer churn increase."',
+    context: 'Your client Northline Software wants an issue tree for "why did customer churn increase."',
     prompt: 'Which breakdown is MECE?',
     options: [
       { id: 'a', text: 'Product issues vs. Price issues vs. Service issues vs. Competitive issues (these can overlap)' },
@@ -65,7 +65,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 4,
     scenarioTag: 'A client asks:',
-    context: 'You are structuring "how can we cut costs" for a manufacturing client.',
+    context: 'Your client Ironclad Manufacturing wants a breakdown of "how can we cut costs."',
     prompt: 'Which breakdown is MECE?',
     options: [
       { id: 'a', text: 'Labor costs vs. Material costs vs. Overhead costs vs. Everything else' },
@@ -84,7 +84,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 3,
     scenarioTag: 'Your manager asks:',
-    context: "A restaurant chain's same-store sales dropped 8% last quarter, right after a new regional competitor opened nearby.",
+    context: "Farmhouse Grill, a restaurant chain, saw same-store sales drop 8% last quarter, right after a new regional competitor opened nearby.",
     prompt: 'Which is the strongest first hypothesis to test?',
     options: [
       { id: 'a', text: 'Something is generally wrong with our restaurants' },
@@ -103,7 +103,7 @@ export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
     kind: 'multipleChoice',
     difficultyTier: 5,
     scenarioTag: 'A partner asks:',
-    context: "A SaaS client's churn spiked specifically among customers on their cheapest pricing tier, right after a support-team restaffing.",
+    context: "Northline Software's churn spiked specifically among customers on their cheapest pricing tier, right after a support-team restaffing.",
     prompt: 'Which is the strongest first hypothesis to test?',
     options: [
       { id: 'a', text: 'The cheap-tier customers were never going to stay long-term anyway' },
