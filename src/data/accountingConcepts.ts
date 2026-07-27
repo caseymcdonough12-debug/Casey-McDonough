@@ -36,4 +36,54 @@ export const ACCOUNTING_CONCEPTS: Record<string, ConceptTeaching> = {
         'Cash is an asset account, and assets increase with a debit. The $500 debit to Cash is paired with a $500 credit to Revenue.',
     },
   },
+  'gross-margin': {
+    id: 'gross-margin',
+    trackId: 'accounting',
+    nodeId: NODE_ID,
+    title: 'Gross margin: how much of each sale you actually keep',
+    whatItDoes:
+      'Gross margin is the percentage of revenue left after subtracting the direct cost of producing what you sold (COGS). Gross Margin = (Revenue − COGS) ÷ Revenue.',
+    realWorldScenario:
+      "You're comparing two product lines and one has much higher revenue — but a lower gross margin means it's actually less profitable per dollar sold. Investors and lenders check this before almost anything else.",
+    example: {
+      scenarioPrompt: 'A furniture maker has $200,000 in Revenue and $120,000 in COGS. What is the gross margin percentage?',
+      targetLabel: 'Gross Margin (%)',
+      answer: '40%',
+      resultExplanation:
+        'Gross Margin = (Revenue − COGS) ÷ Revenue = ($200,000 − $120,000) ÷ $200,000 = 40%.',
+    },
+  },
+  'net-income': {
+    id: 'net-income',
+    trackId: 'accounting',
+    nodeId: NODE_ID,
+    title: "Net income: what's left after every expense",
+    whatItDoes:
+      'Net income (the "bottom line") is Revenue minus every expense a business had — COGS, operating costs, interest, taxes, all of it. Net Income = Revenue − Total Expenses.',
+    realWorldScenario:
+      "A company can have a great gross margin but still lose money overall if operating expenses run too high. Net income is the number that tells you whether the business actually made money this year.",
+    example: {
+      scenarioPrompt: 'A consulting firm had $500,000 in Revenue and $430,000 in total expenses. What is its Net Income?',
+      targetLabel: 'Net Income ($)',
+      answer: '$70,000',
+      resultExplanation: 'Net Income = Revenue − Total Expenses = $500,000 − $430,000 = $70,000.',
+    },
+  },
+  'current-ratio': {
+    id: 'current-ratio',
+    trackId: 'accounting',
+    nodeId: NODE_ID,
+    title: 'Current ratio: can you cover what you owe this year?',
+    whatItDoes:
+      'The current ratio measures whether a company has enough short-term assets (cash, receivables, inventory) to cover what it owes in the next year. Current Ratio = Current Assets ÷ Current Liabilities.',
+    realWorldScenario:
+      "A lender deciding whether to extend a company a line of credit checks its current ratio first — a ratio below 1 means the company might not be able to pay its short-term bills even if it's profitable on paper.",
+    example: {
+      scenarioPrompt: 'A retailer has $180,000 in Current Assets and $90,000 in Current Liabilities. What is its current ratio?',
+      targetLabel: 'Current Ratio (x)',
+      answer: '2x',
+      resultExplanation:
+        'Current Ratio = Current Assets ÷ Current Liabilities = $180,000 ÷ $90,000 = 2. A ratio above 1 generally means the company can cover its near-term obligations.',
+    },
+  },
 };

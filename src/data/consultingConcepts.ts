@@ -37,4 +37,54 @@ export const CONSULTING_CONCEPTS: Record<string, ConceptTeaching> = {
         'Since volume is flat but profit fell, the issue is pricing, cost, or mix — exactly what the profitability framework is built to isolate.',
     },
   },
+  breakeven: {
+    id: 'breakeven',
+    trackId: 'consulting',
+    nodeId: NODE_ID,
+    title: 'Breakeven analysis: how many units until you stop losing money',
+    whatItDoes:
+      'Breakeven point is the number of units you need to sell before revenue covers all your costs. Breakeven Units = Fixed Costs ÷ (Price − Variable Cost per unit).',
+    realWorldScenario:
+      "You're launching a product and need to know how many units you actually have to sell before you're not just burning cash — this is one of the first numbers any investor or founder checks before committing to a launch.",
+    example: {
+      scenarioPrompt: 'A product has $50,000 in Fixed Costs, sells for $25, and costs $15 to produce. How many units must be sold to break even?',
+      targetLabel: 'Breakeven Units',
+      answer: '5,000 units',
+      resultExplanation:
+        'Breakeven Units = Fixed Costs ÷ (Price − Variable Cost) = $50,000 ÷ ($25 − $15) = $50,000 ÷ $10 = 5,000 units.',
+    },
+  },
+  prioritization: {
+    id: 'prioritization',
+    trackId: 'consulting',
+    nodeId: NODE_ID,
+    title: 'The 80/20 rule: focus on what actually moves the needle',
+    whatItDoes:
+      'The Pareto principle observes that roughly 80% of outcomes often come from 20% of causes. In consulting, that means finding the small number of customers, products, or issues driving most of the result — and prioritizing those first.',
+    realWorldScenario:
+      'A client has 200 customer complaints and limited time to address them. Before assigning a team to fix all 200, you check whether a handful of root causes are actually driving most of the complaints — fixing those first has outsized impact.',
+    example: {
+      scenarioPrompt: "A retailer finds that 4 of its 50 stores generate 65% of total profit. What should the client prioritize?",
+      targetLabel: 'Best prioritization',
+      answer: "Study and replicate what's working at those 4 stores before spreading resources evenly across all 50",
+      resultExplanation:
+        "A small number of stores are driving most of the profit — understanding and replicating that advantage has far more leverage than spreading attention evenly across all 50.",
+    },
+  },
+  'market-sizing': {
+    id: 'market-sizing',
+    trackId: 'consulting',
+    nodeId: NODE_ID,
+    title: 'Market sizing: estimating a number nobody has measured yet',
+    whatItDoes:
+      'Top-down market sizing estimates a market by starting from a big known number (population, total spend) and narrowing down with reasonable assumptions: Market Size = Population × Adoption % × Average Spend.',
+    realWorldScenario:
+      "A client wants to know how big the market is for a new product in a country with no existing sales data. You can't look it up, so you build a reasonable estimate from population and behavior assumptions instead.",
+    example: {
+      scenarioPrompt: 'A city has 2,000,000 people. Assume 5% would realistically buy a $40 product per year. What is the market size?',
+      targetLabel: 'Market Size ($)',
+      answer: '$4,000,000',
+      resultExplanation: 'Market Size = Population × Adoption % × Price = 2,000,000 × 0.05 × $40 = $4,000,000.',
+    },
+  },
 };

@@ -58,6 +58,38 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
       'Same idea as before, just a different column: =SUM(E2:E6) totals every revenue value in that range.',
   },
   {
+    id: 'excel-q2b-countif-west',
+    nodeId: NODE_ID,
+    conceptId: 'countif',
+    kind: 'formula',
+    difficultyTier: 2,
+    prompt:
+      'Now you just want a count, not a total. Type a formula in C8 that counts how many rows in B2:B6 have Region equal to "West".',
+    columnHeaders: SALES_HEADERS,
+    cells: salesCells(),
+    targetCellLabel: 'C8',
+    acceptedFormulas: ['=COUNTIF(B2:B6,"WEST")'],
+    correctFormula: '=COUNTIF(B2:B6,"West")',
+    explanation:
+      'COUNTIF(range, criteria) counts how many cells in B2:B6 match "West" — it counts rows, it doesn\'t sum any values.',
+  },
+  {
+    id: 'excel-q2c-countif-units',
+    nodeId: NODE_ID,
+    conceptId: 'countif',
+    kind: 'formula',
+    difficultyTier: 2,
+    prompt:
+      'Type a formula in C9 that counts how many rows in C2:C6 have Units greater than 20.',
+    columnHeaders: SALES_HEADERS,
+    cells: salesCells(),
+    targetCellLabel: 'C9',
+    acceptedFormulas: ['=COUNTIF(C2:C6,">20")'],
+    correctFormula: '=COUNTIF(C2:C6,">20")',
+    explanation:
+      'COUNTIF also accepts comparison criteria like ">20" — it counts every cell in C2:C6 whose value is greater than 20.',
+  },
+  {
     id: 'excel-q3-sumif-west-units',
     nodeId: NODE_ID,
     conceptId: 'sumif',
@@ -90,11 +122,43 @@ export const EXCEL_BASICS_QUESTIONS: LessonQuestion[] = [
       '=SUMIF(B2:B6,"East",E2:E6) sums E2:E6 only for the rows where the Region column reads "East".',
   },
   {
+    id: 'excel-q4b-if-restock',
+    nodeId: NODE_ID,
+    conceptId: 'if',
+    kind: 'formula',
+    difficultyTier: 4,
+    prompt:
+      'Type a formula in F2 that shows "Restock" if C2 (Units) is less than 15, otherwise shows "OK".',
+    columnHeaders: SALES_HEADERS,
+    cells: salesCells(),
+    targetCellLabel: 'F2',
+    acceptedFormulas: ['=IF(C2<15,"RESTOCK","OK")'],
+    correctFormula: '=IF(C2<15,"Restock","OK")',
+    explanation:
+      'IF(condition, value_if_true, value_if_false) checks C2<15 first; if true it returns "Restock", otherwise it returns "OK".',
+  },
+  {
+    id: 'excel-q4c-if-high-value',
+    nodeId: NODE_ID,
+    conceptId: 'if',
+    kind: 'formula',
+    difficultyTier: 4,
+    prompt:
+      'Type a formula in F3 that shows "High Value" if E3 (Revenue) is greater than 400, otherwise shows "Standard".',
+    columnHeaders: SALES_HEADERS,
+    cells: salesCells(),
+    targetCellLabel: 'F3',
+    acceptedFormulas: ['=IF(E3>400,"HIGH VALUE","STANDARD")'],
+    correctFormula: '=IF(E3>400,"High Value","Standard")',
+    explanation:
+      'Same pattern, different condition and labels: =IF(E3>400,"High Value","Standard") checks E3 against 400 and returns one label or the other.',
+  },
+  {
     id: 'excel-q5-vlookup-price',
     nodeId: NODE_ID,
     conceptId: 'vlookup',
     kind: 'formula',
-    difficultyTier: 4,
+    difficultyTier: 5,
     prompt:
       'You need to look up the Price for "Desk Lamp" without scrolling the table yourself. Type a formula in H2 that looks up "Desk Lamp" in A2:A6 and returns the matching value from column D (the 4th column of A2:D6), using an exact match.',
     columnHeaders: SALES_HEADERS,

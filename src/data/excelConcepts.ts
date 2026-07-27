@@ -33,6 +33,36 @@ export const EXCEL_CONCEPTS: Record<string, ConceptTeaching> = {
         'This adds 52 + 61 + 58 + 64 + 70 = 305 cups for the week in a single step. Now try the same idea on a different table.',
     },
   },
+  countif: {
+    id: 'countif',
+    trackId: 'finance',
+    nodeId: NODE_ID,
+    title: 'COUNTIF: counting rows that match a condition',
+    whatItDoes:
+      'COUNTIF counts how many cells in a range meet a condition — it answers "how many," not "how much." No summing involved.',
+    realWorldScenario:
+      "You're a sales manager who wants to know how many reps hit their quota this month, not the total revenue. COUNTIF answers that directly instead of you counting rows by eye.",
+    example: {
+      scenarioPrompt: 'A shift log lists Drink Type for 5 orders in B2:B6. Count how many were Lattes in B7:',
+      columnHeaders: ['Day', 'Drink Type'],
+      cells: [
+        { row: 2, col: 1, value: 'Mon' },
+        { row: 2, col: 2, value: 'Latte' },
+        { row: 3, col: 1, value: 'Tue' },
+        { row: 3, col: 2, value: 'Drip' },
+        { row: 4, col: 1, value: 'Wed' },
+        { row: 4, col: 2, value: 'Latte' },
+        { row: 5, col: 1, value: 'Thu' },
+        { row: 5, col: 2, value: 'Drip' },
+        { row: 6, col: 1, value: 'Fri' },
+        { row: 6, col: 2, value: 'Latte' },
+      ],
+      targetLabel: 'B7',
+      answer: '=COUNTIF(B2:B6,"Latte")',
+      resultExplanation:
+        'COUNTIF(range, criteria) checks each cell in B2:B6 against "Latte" and returns how many matched: 3. No values are added, just counted.',
+    },
+  },
   sumif: {
     id: 'sumif',
     trackId: 'finance',
@@ -67,6 +97,28 @@ export const EXCEL_CONCEPTS: Record<string, ConceptTeaching> = {
       answer: '=SUMIF(B2:B6,"Latte",C2:C6)',
       resultExplanation:
         'SUMIF checks B2:B6 for "Latte", and only adds the matching Cups Sold values: 20 + 18 + 22 = 60 lattes sold this week.',
+    },
+  },
+  if: {
+    id: 'if',
+    trackId: 'finance',
+    nodeId: NODE_ID,
+    title: 'IF: return one value when true, another when false',
+    whatItDoes:
+      'IF(condition, value_if_true, value_if_false) lets a cell show different results depending on whether a condition holds — the basic building block of conditional logic in a spreadsheet.',
+    realWorldScenario:
+      "You're building a commission tracker and want a column that automatically labels each rep \"Bonus\" or \"No Bonus\" depending on whether they hit their target, instead of manually reviewing every row.",
+    example: {
+      scenarioPrompt: "A rep's Units sold is in B2. Show \"Bonus\" in C2 if B2 is at least 50, otherwise \"No Bonus\":",
+      columnHeaders: ['Rep', 'Units'],
+      cells: [
+        { row: 2, col: 1, value: 'Alex' },
+        { row: 2, col: 2, value: '62' },
+      ],
+      targetLabel: 'C2',
+      answer: '=IF(B2>=50,"Bonus","No Bonus")',
+      resultExplanation:
+        'IF checks B2>=50 first; since 62 is at least 50, it returns "Bonus". One formula replaces manually reviewing every row.',
     },
   },
   vlookup: {
