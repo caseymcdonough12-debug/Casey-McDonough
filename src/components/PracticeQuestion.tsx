@@ -56,6 +56,12 @@ export default function PracticeQuestion({
     <View style={styles.container}>
       <Text style={[styles.progress, { color: colors.textMuted }]}>{progressLabel}</Text>
 
+      {question.scenarioTag && (
+        <View style={[styles.scenarioTag, { backgroundColor: colors.surfaceRaised, borderColor: colors.border }]}>
+          <Text style={[styles.scenarioTagText, { color: colors.textMuted }]}>{question.scenarioTag}</Text>
+        </View>
+      )}
+
       {'context' in question && question.context && (
         <Text style={[styles.context, { color: colors.textMuted }]}>{question.context}</Text>
       )}
@@ -218,6 +224,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginBottom: spacing.sm,
+  },
+  scenarioTag: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    marginBottom: spacing.sm,
+  },
+  scenarioTagText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   context: {
     fontSize: 14,

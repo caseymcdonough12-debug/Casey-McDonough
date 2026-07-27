@@ -1,0 +1,118 @@
+import { LessonQuestion } from '../types';
+
+export const NODE_ID = 'consulting-case-basics';
+
+export const CONSULTING_CASE_BASICS_QUESTIONS: LessonQuestion[] = [
+  {
+    id: 'consulting-q1-answer-first-retail',
+    nodeId: NODE_ID,
+    conceptId: 'answer-first',
+    kind: 'multipleChoice',
+    difficultyTier: 1,
+    scenarioTag: 'Your engagement manager asks:',
+    context: "You've finished analyzing why a retailer's profits declined.",
+    prompt: 'Which opening line is the strongest answer-first synthesis?',
+    options: [
+      { id: 'a', text: 'So we looked at a lot of data over the past few weeks and found some interesting things...' },
+      { id: 'b', text: 'Profit declined because online competitors cut prices 15% — we recommend matching prices on our top 20 SKUs to recover $3M in annual margin' },
+      { id: 'c', text: 'Let me walk you through our full analysis before getting to conclusions' },
+      { id: 'd', text: 'There are many factors that could be contributing to this issue' },
+    ],
+    correctOptionId: 'b',
+    explanation: 'It states the cause, the recommendation, and the dollar impact immediately — the executive gets the answer in the first sentence.',
+  },
+  {
+    id: 'consulting-q2-answer-first-acquisition',
+    nodeId: NODE_ID,
+    conceptId: 'answer-first',
+    kind: 'multipleChoice',
+    difficultyTier: 3,
+    scenarioTag: 'A partner asks:',
+    context: "You need to summarize a go/no-go recommendation on an acquisition to the client's board.",
+    prompt: 'Which opening line is strongest?',
+    options: [
+      { id: 'a', text: 'We recommend proceeding with the acquisition at the proposed price — it adds $50M in annual synergies within 2 years' },
+      { id: 'b', text: 'Acquisitions are complex and there are many considerations' },
+      { id: 'c', text: 'We looked at synergies, risks, and valuation across several scenarios' },
+      { id: 'd', text: "Let's start with some background on the target company" },
+    ],
+    correctOptionId: 'a',
+    explanation: 'It leads with the recommendation and the key number — a board wants the decision first, details second.',
+  },
+  {
+    id: 'consulting-q3-mece-churn',
+    nodeId: NODE_ID,
+    conceptId: 'mece',
+    kind: 'multipleChoice',
+    difficultyTier: 2,
+    scenarioTag: 'Your team lead asks:',
+    context: 'You are structuring an issue tree for "why did customer churn increase."',
+    prompt: 'Which breakdown is MECE?',
+    options: [
+      { id: 'a', text: 'Product issues vs. Price issues vs. Service issues vs. Competitive issues (these can overlap)' },
+      { id: 'b', text: "Churn from existing dissatisfaction vs. churn from a competitor's better offer vs. churn from customers whose need disappeared entirely" },
+      { id: 'c', text: 'Bad customers vs. good customers' },
+      { id: 'd', text: "Marketing's fault vs. product's fault" },
+    ],
+    correctOptionId: 'b',
+    explanation:
+      "Each category is a distinct, non-overlapping reason a customer would leave, and together they cover essentially all reasons — a MECE structure.",
+  },
+  {
+    id: 'consulting-q4-mece-costs',
+    nodeId: NODE_ID,
+    conceptId: 'mece',
+    kind: 'multipleChoice',
+    difficultyTier: 4,
+    scenarioTag: 'A client asks:',
+    context: 'You are structuring "how can we cut costs" for a manufacturing client.',
+    prompt: 'Which breakdown is MECE?',
+    options: [
+      { id: 'a', text: 'Labor costs vs. Material costs vs. Overhead costs vs. Everything else' },
+      { id: 'b', text: 'Fixed costs vs. Variable costs' },
+      { id: 'c', text: 'Cutting people vs. cutting perks vs. cutting benefits (these overlap heavily)' },
+      { id: 'd', text: 'Cost-cutting ideas from finance vs. ideas from operations' },
+    ],
+    correctOptionId: 'b',
+    explanation:
+      'Every cost in a business is either fixed or variable, with no overlap — a clean MECE split, unlike categories that blend together or leave ambiguous costs unassigned.',
+  },
+  {
+    id: 'consulting-q5-hypothesis-restaurant',
+    nodeId: NODE_ID,
+    conceptId: 'hypothesis-driven',
+    kind: 'multipleChoice',
+    difficultyTier: 3,
+    scenarioTag: 'Your manager asks:',
+    context: "A restaurant chain's same-store sales dropped 8% last quarter, right after a new regional competitor opened nearby.",
+    prompt: 'Which is the strongest first hypothesis to test?',
+    options: [
+      { id: 'a', text: 'Something is generally wrong with our restaurants' },
+      { id: 'b', text: 'The new competitor is pulling customers away, especially during their overlapping peak hours' },
+      { id: 'c', text: "People just don't like eating out as much anymore" },
+      { id: 'd', text: 'We should investigate every possible cause equally before forming any hypothesis' },
+    ],
+    correctOptionId: 'b',
+    explanation:
+      "It's specific, tied to a real recent change (the competitor opening), and testable by checking whether the sales drop concentrates around overlapping hours/locations.",
+  },
+  {
+    id: 'consulting-q6-hypothesis-saas',
+    nodeId: NODE_ID,
+    conceptId: 'hypothesis-driven',
+    kind: 'multipleChoice',
+    difficultyTier: 5,
+    scenarioTag: 'A partner asks:',
+    context: "A SaaS client's churn spiked specifically among customers on their cheapest pricing tier, right after a support-team restaffing.",
+    prompt: 'Which is the strongest first hypothesis to test?',
+    options: [
+      { id: 'a', text: 'The cheap-tier customers were never going to stay long-term anyway' },
+      { id: 'b', text: 'Support response times for the cheapest tier got worse after the restaffing, driving those specific customers to leave' },
+      { id: 'c', text: 'The whole product must be declining in quality' },
+      { id: 'd', text: 'We should survey every customer before hypothesizing anything' },
+    ],
+    correctOptionId: 'b',
+    explanation:
+      'It links two facts that actually happened together (restaffing timing + which tier churned) into one specific, testable cause.',
+  },
+];

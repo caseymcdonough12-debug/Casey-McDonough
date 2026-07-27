@@ -1,0 +1,98 @@
+import { LessonQuestion } from '../types';
+
+export const NODE_ID = 'accounting-cycle';
+
+export const ACCOUNTING_CYCLE_QUESTIONS: LessonQuestion[] = [
+  {
+    id: 'accounting-q1-debit-credit-sale',
+    nodeId: NODE_ID,
+    conceptId: 'debit-credit',
+    kind: 'multipleChoice',
+    difficultyTier: 1,
+    context: 'A customer pays $500 cash for a service.',
+    prompt: 'How does this affect the Cash account (an Asset)?',
+    options: [
+      { id: 'debit', text: 'Debit (increase)' },
+      { id: 'credit', text: 'Credit (decrease)' },
+    ],
+    correctOptionId: 'debit',
+    explanation: 'Cash is an asset account, and assets increase with a debit. The $500 debit to Cash is paired with a $500 credit to Revenue.',
+  },
+  {
+    id: 'accounting-q2-debit-credit-loan',
+    nodeId: NODE_ID,
+    conceptId: 'debit-credit',
+    kind: 'multipleChoice',
+    difficultyTier: 2,
+    context: 'A company takes out a $10,000 bank loan.',
+    prompt: 'How does this affect the Loan Payable account (a Liability)?',
+    options: [
+      { id: 'debit', text: 'Debit (increase)' },
+      { id: 'credit', text: 'Credit (increase)' },
+    ],
+    correctOptionId: 'credit',
+    explanation: 'Liabilities increase with a credit. The company now owes more, so Loan Payable is credited for $10,000.',
+  },
+  {
+    id: 'accounting-q3-journal-entry-rent',
+    nodeId: NODE_ID,
+    conceptId: 'journal-entries',
+    kind: 'multipleChoice',
+    difficultyTier: 2,
+    scenarioTag: 'Your controller asks:',
+    context: "The company pays $1,200 cash for this month's rent.",
+    prompt: 'Which journal entry is correct?',
+    options: [
+      { id: 'a', text: 'Debit Rent Expense $1,200 / Credit Cash $1,200' },
+      { id: 'b', text: 'Debit Cash $1,200 / Credit Rent Expense $1,200' },
+      { id: 'c', text: 'Debit Rent Expense $1,200 / Credit Accounts Payable $1,200' },
+      { id: 'd', text: 'Debit Cash $1,200 / Credit Accounts Payable $1,200' },
+    ],
+    correctOptionId: 'a',
+    explanation:
+      'Rent Expense increases with a debit, and Cash (an asset) decreases with a credit since cash left the business.',
+  },
+  {
+    id: 'accounting-q4-journal-entry-receivable',
+    nodeId: NODE_ID,
+    conceptId: 'journal-entries',
+    kind: 'multipleChoice',
+    difficultyTier: 4,
+    scenarioTag: 'Your controller asks:',
+    context: 'The company provides $5,000 of services to a client on credit (the client will pay later).',
+    prompt: 'Which journal entry is correct?',
+    options: [
+      { id: 'a', text: 'Debit Accounts Receivable $5,000 / Credit Revenue $5,000' },
+      { id: 'b', text: 'Debit Revenue $5,000 / Credit Accounts Receivable $5,000' },
+      { id: 'c', text: 'Debit Cash $5,000 / Credit Revenue $5,000' },
+      { id: 'd', text: 'Debit Accounts Receivable $5,000 / Credit Cash $5,000' },
+    ],
+    correctOptionId: 'a',
+    explanation:
+      'No cash changed hands yet, so Accounts Receivable (an asset) is debited to reflect money owed, and Revenue is credited since the service was earned.',
+  },
+  {
+    id: 'accounting-q5-equation-equity',
+    nodeId: NODE_ID,
+    conceptId: 'accounting-equation',
+    kind: 'numeric',
+    difficultyTier: 3,
+    prompt: 'A design studio has $120,000 in Assets and $45,000 in Liabilities. What is its Equity?',
+    targetLabel: 'Equity ($)',
+    correctValue: 75000,
+    tolerance: 0.5,
+    explanation: 'Equity = Assets − Liabilities = $120,000 − $45,000 = $75,000.',
+  },
+  {
+    id: 'accounting-q6-equation-assets',
+    nodeId: NODE_ID,
+    conceptId: 'accounting-equation',
+    kind: 'numeric',
+    difficultyTier: 4,
+    prompt: "A food truck business has $30,000 in Equity and $18,000 in Liabilities. What are its total Assets?",
+    targetLabel: 'Assets ($)',
+    correctValue: 48000,
+    tolerance: 0.5,
+    explanation: 'Assets = Liabilities + Equity = $18,000 + $30,000 = $48,000.',
+  },
+];

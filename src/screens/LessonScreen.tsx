@@ -4,18 +4,22 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } fr
 import ConceptTeachingCard from '../components/ConceptTeachingCard';
 import PracticeQuestion from '../components/PracticeQuestion';
 import { useProgress } from '../context/ProgressContext';
-import { ACCOUNTING_CONCEPTS } from '../data/accountingConcepts';
-import { ACCOUNTING_QUESTIONS } from '../data/accountingBasics';
-import { CONSULTING_CONCEPTS } from '../data/consultingConcepts';
-import { CONSULTING_QUESTIONS } from '../data/consultingBasics';
-import { EXCEL_BASICS_QUESTIONS } from '../data/excelBasics';
-import { EXCEL_CONCEPTS } from '../data/excelConcepts';
-import { MARKETING_CONCEPTS } from '../data/marketingConcepts';
-import { MARKETING_QUESTIONS } from '../data/marketingBasics';
-import { OPERATIONS_CONCEPTS } from '../data/operationsConcepts';
-import { OPERATIONS_QUESTIONS } from '../data/operationsBasics';
-import { STARTUPS_CONCEPTS } from '../data/startupsConcepts';
-import { STARTUPS_QUESTIONS } from '../data/startupsBasics';
+import { ACCOUNTING_CYCLE_CONCEPTS } from '../data/accountingCycleConcepts';
+import { ACCOUNTING_CYCLE_QUESTIONS } from '../data/accountingCycle';
+import { CONSULTING_CASE_BASICS_CONCEPTS } from '../data/consultingCaseBasicsConcepts';
+import { CONSULTING_CASE_BASICS_QUESTIONS } from '../data/consultingCaseBasics';
+import { ECONOMICS_PRINCIPLES_CONCEPTS } from '../data/economicsPrinciplesConcepts';
+import { ECONOMICS_PRINCIPLES_QUESTIONS } from '../data/economicsPrinciples';
+import { ENTREPRENEURSHIP_PITCH_DECK_CONCEPTS } from '../data/entrepreneurshipPitchDeckConcepts';
+import { ENTREPRENEURSHIP_PITCH_DECK_QUESTIONS } from '../data/entrepreneurshipPitchDeck';
+import { FINANCE_STATEMENTS_CONCEPTS } from '../data/financeStatementsConcepts';
+import { FINANCE_STATEMENTS_QUESTIONS } from '../data/financeStatements';
+import { MARKETING_METRICS_CONCEPTS } from '../data/marketingMetricsConcepts';
+import { MARKETING_METRICS_QUESTIONS } from '../data/marketingMetrics';
+import { OPERATIONS_PROCESS_MAPPING_CONCEPTS } from '../data/operationsProcessMappingConcepts';
+import { OPERATIONS_PROCESS_MAPPING_QUESTIONS } from '../data/operationsProcessMapping';
+import { PERSONAL_FINANCE_BUDGETING_CONCEPTS } from '../data/personalFinanceBudgetingConcepts';
+import { PERSONAL_FINANCE_BUDGETING_QUESTIONS } from '../data/personalFinanceBudgeting';
 import { RootStackParamList } from '../navigation/types';
 import { useTheme } from '../theme/ThemeContext';
 import { ConceptTeaching, LessonQuestion } from '../types';
@@ -23,21 +27,25 @@ import { ConceptTeaching, LessonQuestion } from '../types';
 type Props = NativeStackScreenProps<RootStackParamList, 'Lesson'>;
 
 const QUESTIONS_BY_NODE: Record<string, LessonQuestion[]> = {
-  'finance-excel-basics': EXCEL_BASICS_QUESTIONS,
-  'accounting-debits-credits': ACCOUNTING_QUESTIONS,
-  'marketing-positioning-channels': MARKETING_QUESTIONS,
-  'consulting-structured-problem-solving': CONSULTING_QUESTIONS,
-  'startups-unit-economics': STARTUPS_QUESTIONS,
-  'operations-process-bottlenecks': OPERATIONS_QUESTIONS,
+  'finance-reading-statements': FINANCE_STATEMENTS_QUESTIONS,
+  'personalfinance-budgeting-saving': PERSONAL_FINANCE_BUDGETING_QUESTIONS,
+  'economics-core-principles': ECONOMICS_PRINCIPLES_QUESTIONS,
+  'accounting-cycle': ACCOUNTING_CYCLE_QUESTIONS,
+  'entrepreneurship-pitch-deck': ENTREPRENEURSHIP_PITCH_DECK_QUESTIONS,
+  'consulting-case-basics': CONSULTING_CASE_BASICS_QUESTIONS,
+  'marketing-campaign-metrics': MARKETING_METRICS_QUESTIONS,
+  'operations-process-mapping': OPERATIONS_PROCESS_MAPPING_QUESTIONS,
 };
 
 const CONCEPTS_BY_NODE: Record<string, Record<string, ConceptTeaching>> = {
-  'finance-excel-basics': EXCEL_CONCEPTS,
-  'accounting-debits-credits': ACCOUNTING_CONCEPTS,
-  'marketing-positioning-channels': MARKETING_CONCEPTS,
-  'consulting-structured-problem-solving': CONSULTING_CONCEPTS,
-  'startups-unit-economics': STARTUPS_CONCEPTS,
-  'operations-process-bottlenecks': OPERATIONS_CONCEPTS,
+  'finance-reading-statements': FINANCE_STATEMENTS_CONCEPTS,
+  'personalfinance-budgeting-saving': PERSONAL_FINANCE_BUDGETING_CONCEPTS,
+  'economics-core-principles': ECONOMICS_PRINCIPLES_CONCEPTS,
+  'accounting-cycle': ACCOUNTING_CYCLE_CONCEPTS,
+  'entrepreneurship-pitch-deck': ENTREPRENEURSHIP_PITCH_DECK_CONCEPTS,
+  'consulting-case-basics': CONSULTING_CASE_BASICS_CONCEPTS,
+  'marketing-campaign-metrics': MARKETING_METRICS_CONCEPTS,
+  'operations-process-mapping': OPERATIONS_PROCESS_MAPPING_CONCEPTS,
 };
 
 export default function LessonScreen({ route, navigation }: Props) {

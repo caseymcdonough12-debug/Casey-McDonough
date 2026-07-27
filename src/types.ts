@@ -1,5 +1,7 @@
 export type TrackId =
   | 'finance'
+  | 'personalFinance'
+  | 'economics'
   | 'accounting'
   | 'marketing'
   | 'consulting'
@@ -8,6 +10,8 @@ export type TrackId =
 
 export const ALL_TRACK_IDS: TrackId[] = [
   'finance',
+  'personalFinance',
+  'economics',
   'accounting',
   'marketing',
   'consulting',
@@ -53,6 +57,7 @@ interface BaseLessonQuestion {
   nodeId: string;
   conceptId: string; // groups questions so a teaching card can precede each new concept
   difficultyTier: 1 | 2 | 3 | 4 | 5;
+  scenarioTag?: string; // e.g. "Your manager asks:" — frames the question as a real ask
   prompt: string;
   explanation: string;
 }
@@ -104,9 +109,11 @@ export interface ConceptTeaching {
   id: string;
   trackId: TrackId;
   nodeId: string;
-  title: string;
-  whatItDoes: string;
-  realWorldScenario: string;
+  skillName: string; // short name/formula shown in the code chip, e.g. "SUM()" or "Net Income"
+  whatItDoes: string; // one plain-English sentence
+  jobRole: string; // e.g. "Financial Analyst" — the specific role in the "on the job" box
+  jobScenario: string; // one-sentence real workplace scenario for that role
+  alsoAppliesIn: string[]; // 3-4 other roles/fields where this concept also comes up
   example: ConceptExample;
 }
 
