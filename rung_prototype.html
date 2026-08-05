@@ -362,9 +362,12 @@ const LESSONS = {
   ],
   personalFinance: [
     {
-      skillName: '50/30/20 Rule', whatItDoes: 'Splits take-home pay into 50% needs, 30% wants, and 20% savings/debt payoff — a simple starting budget.',
-      jobRole: 'Financial Wellness Coach', jobScenario: 'A new hire asks how to budget their first paycheck, and you walk them through the split.',
-      alsoAppliesIn: ['HR Benefits Counselor', 'New Grad', 'Credit Counselor', 'Financial Planner'],
+      skillName: '50/30/20 Rule', whatItDoes: 'Splits your take-home pay into 50% needs, 30% wants, and 20% savings or debt payoff — a simple starting budget without tracking every category.',
+      depthNote: "You don't need a finance degree or a fancy app to start — this one rule alone puts you ahead of most people who never budget at all.",
+      scenarioBoxLabel: 'IN REAL LIFE',
+      jobRole: 'Your First Paycheck', jobScenario: 'You just got your first real paycheck and have no idea where the money should go — the 50/30/20 split gives you an instant plan before you spend a dollar.',
+      alsoAppliesLabel: 'Also matters when:',
+      alsoAppliesIn: ['Moving out on your own', 'Paying off student loans', 'Getting a raise', 'Living paycheck to paycheck'],
       example: { prompt: 'Someone takes home $4,000/month. How much should go to Savings/Debt Payoff under 50/30/20?', table: [['Category','% of pay'],['Needs','50%'],['Wants','30%'],['Savings/Debt','20%']], targetLabel: 'Savings/Debt (20%) ($)', answer: '$800', resultExplanation: '20% of $4,000 = $800.' },
       questions: [
         { scenarioTag: 'A friend asks:', prompt: 'I take home $3,200 a month — how much should go to Needs under 50/30/20?', kind: 'numeric', targetLabel: 'Needs (50%) ($)', correctValue: 1600, tolerance: 1, explanation: '50% of $3,200 = $1,600.' },
@@ -373,8 +376,11 @@ const LESSONS = {
     },
     {
       skillName: 'Emergency Fund Size', whatItDoes: 'Emergency Fund = Monthly Essential Expenses × Months of Coverage — so a job loss doesn\'t turn into a crisis.',
-      jobRole: 'Financial Planner', jobScenario: 'A client just got a raise and asks how big their emergency fund should be before investing the extra money.',
-      alsoAppliesIn: ['Credit Counselor', 'HR Benefits Counselor', 'New Grad', 'Financial Wellness Coach'],
+      depthNote: "Most financial disasters aren't really about the emergency itself — they're about not having cash ready when it hits.",
+      scenarioBoxLabel: 'IN REAL LIFE',
+      jobRole: 'Building Your Safety Net', jobScenario: 'Your car breaks down or you unexpectedly lose your job — an emergency fund is the difference between a stressful week and a full-blown financial crisis.',
+      alsoAppliesLabel: 'Also matters when:',
+      alsoAppliesIn: ['Losing a job', 'A surprise medical bill', 'Car or home repairs', 'Taking a career risk'],
       example: { prompt: "Someone's essential expenses are $3,000/month and they want 6 months of coverage. How big should the fund be?", table: [['Input','Value'],['Monthly Expenses','$3,000'],['Months of Coverage','6']], targetLabel: 'Emergency Fund ($)', answer: '$18,000', resultExplanation: '$3,000 × 6 = $18,000.' },
       questions: [
         { scenarioTag: 'A friend asks:', prompt: 'My essential expenses are $2,500/month and I want 3 months of coverage. How big should my emergency fund be?', kind: 'numeric', targetLabel: 'Emergency Fund ($)', correctValue: 7500, tolerance: 1, explanation: '$2,500 × 3 = $7,500.' },
@@ -383,8 +389,11 @@ const LESSONS = {
     },
     {
       skillName: 'Compound Growth', whatItDoes: 'Future Value = Principal × (1 + rate) ^ years — growth accelerates the longer money stays invested.',
-      jobRole: 'Financial Planner', jobScenario: 'A 25-year-old asks whether starting to save now versus in five years actually matters.',
-      alsoAppliesIn: ['Investment Advisor', 'New Grad', 'HR Benefits Counselor', 'Retirement Counselor'],
+      depthNote: 'This is the whole reason people say "start investing as early as possible" — time does more of the work than the amount you put in.',
+      scenarioBoxLabel: 'IN REAL LIFE',
+      jobRole: 'Starting Early vs. Starting Late', jobScenario: "You're deciding whether to start putting money away now in your 20s or wait until you're making more later — compound growth shows exactly what that wait actually costs you.",
+      alsoAppliesLabel: 'Also matters when:',
+      alsoAppliesIn: ['Opening a retirement account', 'Choosing to invest vs. save', 'Planning for a big future goal', 'Deciding how much to contribute'],
       example: { prompt: '$10,000 grows at 8%/year for 2 years. What is the Future Value?', table: [['Input','Value'],['Principal','$10,000'],['Rate','8%'],['Years','2']], targetLabel: 'Future Value ($)', answer: '$11,664', resultExplanation: '$10,000 × 1.08² = $11,664.' },
       questions: [
         { scenarioTag: 'A friend asks:', prompt: '$5,000 grows at 10%/year for 2 years. What is the Future Value?', kind: 'numeric', targetLabel: 'Future Value ($)', correctValue: 6050, tolerance: 5, explanation: '$5,000 × 1.10² = $6,050.' },
@@ -459,8 +468,11 @@ const LESSONS = {
   startups: [
     {
       skillName: 'Problem/Solution Framing', whatItDoes: 'A strong pitch names a specific, painful problem for a specific customer before presenting the solution.',
-      jobRole: 'Startup Founder', jobScenario: "You're rewriting your deck's second slide the night before demo day and need the problem in one sentence.",
-      alsoAppliesIn: ['Accelerator Mentor', 'Angel Investor', 'Venture Capital Associate', 'Product Manager'],
+      depthNote: "Investors fund problems worth solving, not products they think are cool — if you can't state the pain in one sentence, they'll assume it isn't that painful.",
+      scenarioBoxLabel: 'AS A FOUNDER',
+      jobRole: 'Pitching for the First Time', jobScenario: "You're rewriting your deck's second slide the night before demo day and need the problem in one sentence.",
+      alsoAppliesLabel: 'Also comes up when:',
+      alsoAppliesIn: ['Writing your website homepage', 'Talking to your first customers', 'Applying to an accelerator', 'Recruiting a co-founder'],
       example: { prompt: 'Which problem statement is investor-ready for a scheduling app for freelance stylists?', table: [['Option','Quality'],['"Scheduling is hard"','Vague'],['"Stylists lose 5 hrs/week to no-shows"','Specific']], targetLabel: 'Best statement', answer: '"Independent stylists lose 5 hours/week to no-shows and phone-tag scheduling."', resultExplanation: 'Specific, quantified, names the exact pain.' },
       questions: [
         { scenarioTag: 'Your co-founder asks:', context: "You're pitching a meal-prep app for busy parents.", prompt: 'Which problem statement is strongest?', kind: 'multipleChoice', options: ['Cooking is hard for busy people','Parents working 50+ hour weeks spend 45 min/day just deciding what to cook','Nobody likes cooking after work'], correctIndex: 1, explanation: "It's specific and quantified — a concrete pain point." },
@@ -469,8 +481,11 @@ const LESSONS = {
     },
     {
       skillName: 'Traction Slide', whatItDoes: 'Show the metric that best proves real demand for THIS stage of the company.',
-      jobRole: 'Startup Founder', jobScenario: 'You have no revenue yet and need to pick which early signal actually convinces investors.',
-      alsoAppliesIn: ['Venture Capital Associate', 'Accelerator Mentor', 'Angel Investor', 'Growth Marketer'],
+      depthNote: 'Every stage of a startup has a different kind of proof — the trick is picking the one you actually have, not the one you wish you had.',
+      scenarioBoxLabel: 'AS A FOUNDER',
+      jobRole: 'Proving It Works', jobScenario: 'You have no revenue yet and need to pick which early signal actually convinces investors.',
+      alsoAppliesLabel: 'Also comes up when:',
+      alsoAppliesIn: ['Applying to an accelerator', 'Sending investor updates', 'Deciding what to measure first', 'Convincing a co-founder to join'],
       example: { prompt: 'A pre-launch startup has no paying customers. Which traction metric is strongest?', table: [['Signal','Strength'],['Vague interest','Weak'],['4,000-person organic waitlist, 30% open rate','Strong']], targetLabel: 'Best metric', answer: 'A 4,000-person waitlist built organically in 3 weeks', resultExplanation: 'Clear proof of real demand pre-revenue.' },
       questions: [
         { scenarioTag: 'An advisor asks:', context: 'Vantage SaaS ran a 3-month paid pilot with one enterprise customer.', prompt: 'Which traction metric is strongest?', kind: 'multipleChoice', options: ['The pilot customer renewed and expanded their contract 40%','The founders think the product is great','They have a logo on their website'], correctIndex: 0, explanation: 'A renewal plus expansion is concrete proof of value.' },
@@ -479,8 +494,11 @@ const LESSONS = {
     },
     {
       skillName: 'The Ask', whatItDoes: 'Raise Amount ≈ Monthly Burn × Target Runway Months.',
-      jobRole: 'Startup Founder', jobScenario: "You're finalizing your fundraising target to hit your next milestone without raising again too soon.",
-      alsoAppliesIn: ['Venture Capital Associate', 'Angel Investor', 'CFO', 'Accelerator Mentor'],
+      depthNote: "Raise too little and you're back asking for money in six months; raise too much and you give away more of your company than you needed to.",
+      scenarioBoxLabel: 'AS A FOUNDER',
+      jobRole: 'Setting Your Raise', jobScenario: "You're finalizing your fundraising target to hit your next milestone without raising again too soon.",
+      alsoAppliesLabel: 'Also comes up when:',
+      alsoAppliesIn: ['Negotiating your valuation', 'Planning your hiring budget', 'Deciding when to raise again', 'Talking to a co-founder about spending'],
       example: { prompt: 'A startup burns $40,000/month and wants 18 months of runway. How much should they raise?', table: [['Input','Value'],['Monthly Burn','$40,000'],['Target Runway','18 months']], targetLabel: 'Raise Amount ($)', answer: '$720,000', resultExplanation: '$40,000 × 18 = $720,000.' },
       questions: [
         { prompt: 'A startup burns $25,000/month and wants 12 months of runway. How much should they raise?', kind: 'numeric', targetLabel: 'Raise Amount ($)', correctValue: 300000, tolerance: 1, explanation: '$25,000 × 12 = $300,000.' },
@@ -825,19 +843,24 @@ function renderTeachCard(concept) {
   }).join('');
   const tags = concept.alsoAppliesIn.map(r => `<span class="tag">${esc(r)}</span>`).join('');
 
+  const depthNoteHtml = concept.depthNote ? `<p class="body-text" style="color:var(--text-muted);">${esc(concept.depthNote)}</p>` : '';
+  const boxLabel = concept.scenarioBoxLabel || 'ON THE JOB';
+  const tagsLabel = concept.alsoAppliesLabel || 'Also comes up in:';
+
   screenEl.innerHTML = `
     <div class="pad">
       <div class="eyebrow">New skill</div>
       <div class="chip">${esc(concept.skillName)}</div>
       <p class="body-text">${esc(concept.whatItDoes)}</p>
+      ${depthNoteHtml}
 
       <div class="job-box">
-        <div class="job-label">On the job</div>
+        <div class="job-label">${esc(boxLabel)}</div>
         <div class="job-role">${esc(concept.jobRole)}</div>
         <div class="job-scenario">${esc(concept.jobScenario)}</div>
       </div>
 
-      <div class="tags-label">Also comes up in:</div>
+      <div class="tags-label">${esc(tagsLabel)}</div>
       <div class="tags-list">${tags}</div>
 
       <div class="section-label">Worked example</div>

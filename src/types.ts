@@ -111,9 +111,12 @@ export interface ConceptTeaching {
   nodeId: string;
   skillName: string; // short name/formula shown in the code chip, e.g. "SUM()" or "Net Income"
   whatItDoes: string; // one plain-English sentence
-  jobRole: string; // e.g. "Financial Analyst" — the specific role in the "on the job" box
-  jobScenario: string; // one-sentence real workplace scenario for that role
-  alsoAppliesIn: string[]; // 3-4 other roles/fields where this concept also comes up
+  depthNote?: string; // optional second explanatory sentence, for tracks that need more context than a job-role framing gives
+  scenarioBoxLabel?: string; // defaults to "ON THE JOB"; e.g. "IN REAL LIFE" or "AS A FOUNDER" for non-job tracks
+  jobRole: string; // e.g. "Financial Analyst", or a life/founder-stage label like "Your First Paycheck" for non-job tracks
+  jobScenario: string; // one-sentence scenario for that role/stage
+  alsoAppliesLabel?: string; // defaults to "Also comes up in:"; e.g. "Also matters when:" for non-job tracks
+  alsoAppliesIn: string[]; // 3-4 other roles/fields (or situations, for non-job tracks) where this concept also comes up
   example: ConceptExample;
 }
 

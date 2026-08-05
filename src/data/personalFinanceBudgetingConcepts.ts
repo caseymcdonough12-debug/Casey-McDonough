@@ -8,11 +8,15 @@ export const PERSONAL_FINANCE_BUDGETING_CONCEPTS: Record<string, ConceptTeaching
     nodeId: NODE_ID,
     skillName: '50/30/20 Rule',
     whatItDoes:
-      'The 50/30/20 rule splits take-home pay into 50% needs, 30% wants, and 20% savings/debt payoff, giving you a simple starting budget without tracking every category.',
-    jobRole: 'Financial Wellness Coach',
+      'The 50/30/20 rule splits your take-home pay into 50% needs, 30% wants, and 20% savings or debt payoff — a simple starting budget without tracking every category.',
+    depthNote:
+      "You don't need a finance degree or a fancy app to start — this one rule alone puts you ahead of most people who never budget at all.",
+    scenarioBoxLabel: 'IN REAL LIFE',
+    jobRole: 'Your First Paycheck',
     jobScenario:
-      "A new hire asks how to budget their first paycheck, and you walk them through the 50/30/20 split before recommending anything more complex.",
-    alsoAppliesIn: ['HR Benefits Counselor', 'New Grad', 'Credit Counselor', 'Financial Planner'],
+      "You just got your first real paycheck and have no idea where the money should go — the 50/30/20 split gives you an instant plan before you spend a dollar.",
+    alsoAppliesLabel: 'Also matters when:',
+    alsoAppliesIn: ['Moving out on your own', 'Paying off student loans', 'Getting a raise', 'Living paycheck to paycheck'],
     example: {
       scenarioPrompt: 'Someone takes home $4,000 per month. How much should go to Savings/Debt Payoff under the 50/30/20 rule?',
       targetLabel: 'Savings/Debt (20%) ($)',
@@ -27,10 +31,14 @@ export const PERSONAL_FINANCE_BUDGETING_CONCEPTS: Record<string, ConceptTeaching
     skillName: 'Emergency Fund Size',
     whatItDoes:
       'An emergency fund should cover a set number of months of essential expenses: Emergency Fund = Monthly Essential Expenses × Months of Coverage — so a job loss doesn\'t turn into a financial crisis.',
-    jobRole: 'Financial Planner',
+    depthNote:
+      "Most financial disasters aren't really about the emergency itself — they're about not having cash ready when it hits.",
+    scenarioBoxLabel: 'IN REAL LIFE',
+    jobRole: 'Building Your Safety Net',
     jobScenario:
-      "A client just got a raise and asks how big their emergency fund should actually be before investing the extra money.",
-    alsoAppliesIn: ['Credit Counselor', 'HR Benefits Counselor', 'New Grad', 'Financial Wellness Coach'],
+      "Your car breaks down or you unexpectedly lose your job — an emergency fund is the difference between a stressful week and a full-blown financial crisis.",
+    alsoAppliesLabel: 'Also matters when:',
+    alsoAppliesIn: ['Losing a job', 'A surprise medical bill', 'Car or home repairs', 'Taking a career risk'],
     example: {
       scenarioPrompt: "Someone's essential monthly expenses are $3,000 and they want 6 months of coverage. How big should their emergency fund be?",
       targetLabel: 'Emergency Fund ($)',
@@ -45,10 +53,14 @@ export const PERSONAL_FINANCE_BUDGETING_CONCEPTS: Record<string, ConceptTeaching
     skillName: 'Compound Growth',
     whatItDoes:
       'Money growing at a fixed annual rate compounds: Future Value = Principal × (1 + rate) ^ years — meaning growth accelerates the longer money stays invested.',
-    jobRole: 'Financial Planner',
+    depthNote:
+      "This is the whole reason people say \"start investing as early as possible\" — time does more of the work than the amount you put in.",
+    scenarioBoxLabel: 'IN REAL LIFE',
+    jobRole: 'Starting Early vs. Starting Late',
     jobScenario:
-      "A 25-year-old asks whether starting to save now versus in five years actually matters, and you run the compound growth math to show them why it does.",
-    alsoAppliesIn: ['Investment Advisor', 'New Grad', 'HR Benefits Counselor', 'Retirement Counselor'],
+      "You're deciding whether to start putting money away now in your 20s or wait until you're making more later — compound growth shows exactly what that wait actually costs you.",
+    alsoAppliesLabel: 'Also matters when:',
+    alsoAppliesIn: ['Opening a retirement account', 'Choosing to invest vs. save', 'Planning for a big future goal', 'Deciding how much to contribute'],
     example: {
       scenarioPrompt: '$10,000 grows at 8% per year for 2 years. What is the Future Value (rounded to the nearest dollar)?',
       targetLabel: 'Future Value ($)',

@@ -9,10 +9,14 @@ export const ENTREPRENEURSHIP_PITCH_DECK_CONCEPTS: Record<string, ConceptTeachin
     skillName: 'Problem/Solution Framing',
     whatItDoes:
       'A strong pitch names a specific, painful problem for a specific customer before presenting the solution — a vague problem makes investors doubt the solution matters.',
-    jobRole: 'Startup Founder',
+    depthNote:
+      "Investors fund problems worth solving, not products they think are cool — if you can't state the pain in one sentence, they'll assume it isn't that painful.",
+    scenarioBoxLabel: 'AS A FOUNDER',
+    jobRole: 'Pitching for the First Time',
     jobScenario:
       "You're rewriting your pitch deck's second slide the night before a demo day and need the problem statement to land in one sentence.",
-    alsoAppliesIn: ['Accelerator Mentor', 'Angel Investor', 'Venture Capital Associate', 'Product Manager'],
+    alsoAppliesLabel: 'Also comes up when:',
+    alsoAppliesIn: ['Writing your website homepage', 'Talking to your first customers', 'Applying to an accelerator', 'Recruiting a co-founder'],
     example: {
       scenarioPrompt: 'Which problem statement is investor-ready for a scheduling app aimed at freelance hair stylists?',
       targetLabel: 'Best problem statement',
@@ -28,10 +32,14 @@ export const ENTREPRENEURSHIP_PITCH_DECK_CONCEPTS: Record<string, ConceptTeachin
     skillName: 'Traction Slide',
     whatItDoes:
       "A traction slide should show the metric that best proves real demand for THIS stage of the company — pre-launch traction looks different from traction after a year of revenue.",
-    jobRole: 'Startup Founder',
+    depthNote:
+      "Every stage of a startup has a different kind of proof — the trick is picking the one you actually have, not the one you wish you had.",
+    scenarioBoxLabel: 'AS A FOUNDER',
+    jobRole: 'Proving It Works',
     jobScenario:
       'You have no revenue yet and need to pick which early signal (waitlist size, pilot results, letters of intent) actually convinces investors you\'re onto something.',
-    alsoAppliesIn: ['Venture Capital Associate', 'Accelerator Mentor', 'Angel Investor', 'Growth Marketer'],
+    alsoAppliesLabel: 'Also comes up when:',
+    alsoAppliesIn: ['Applying to an accelerator', 'Sending investor updates', 'Deciding what to measure first', 'Convincing a co-founder to join'],
     example: {
       scenarioPrompt: 'A pre-launch startup with no paying customers yet is building its traction slide. Which metric is the strongest choice?',
       targetLabel: 'Best traction metric',
@@ -47,10 +55,14 @@ export const ENTREPRENEURSHIP_PITCH_DECK_CONCEPTS: Record<string, ConceptTeachin
     skillName: 'The Ask',
     whatItDoes:
       'The ask slide states how much you\'re raising, sized to cover a target runway: Raise Amount ≈ Monthly Burn × Target Runway Months.',
-    jobRole: 'Startup Founder',
+    depthNote:
+      "Raise too little and you're back asking for money in six months; raise too much and you give away more of your company than you needed to.",
+    scenarioBoxLabel: 'AS A FOUNDER',
+    jobRole: 'Setting Your Raise',
     jobScenario:
       "You're finalizing your fundraising target and need a number that gives you enough runway to hit your next milestone without raising again too soon.",
-    alsoAppliesIn: ['Venture Capital Associate', 'Angel Investor', 'CFO', 'Accelerator Mentor'],
+    alsoAppliesLabel: 'Also comes up when:',
+    alsoAppliesIn: ['Negotiating your valuation', 'Planning your hiring budget', 'Deciding when to raise again', 'Talking to a co-founder about spending'],
     example: {
       scenarioPrompt: 'A startup burns $40,000/month and wants 18 months of runway. How much should they raise?',
       targetLabel: 'Raise Amount ($)',

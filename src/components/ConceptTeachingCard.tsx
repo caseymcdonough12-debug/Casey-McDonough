@@ -32,19 +32,27 @@ export default function ConceptTeachingCard({ concept, onReady }: Props) {
 
       <Text style={[styles.body, { color: colors.text }]}>{concept.whatItDoes}</Text>
 
+      {concept.depthNote && (
+        <Text style={[styles.body, { color: colors.textMuted }]}>{concept.depthNote}</Text>
+      )}
+
       <View
         style={[
           styles.jobBox,
           { backgroundColor: colors.surfaceRaised, borderColor: colors.border },
         ]}
       >
-        <Text style={[styles.jobLabel, { color: colors.textMuted }]}>ON THE JOB</Text>
+        <Text style={[styles.jobLabel, { color: colors.textMuted }]}>
+          {concept.scenarioBoxLabel ?? 'ON THE JOB'}
+        </Text>
         <Text style={[styles.jobRole, { color: colors.text }]}>{concept.jobRole}</Text>
         <Text style={[styles.jobScenario, { color: colors.text }]}>{concept.jobScenario}</Text>
       </View>
 
       <View style={styles.tagsRow}>
-        <Text style={[styles.tagsLabel, { color: colors.textMuted }]}>Also comes up in:</Text>
+        <Text style={[styles.tagsLabel, { color: colors.textMuted }]}>
+          {concept.alsoAppliesLabel ?? 'Also comes up in:'}
+        </Text>
         <View style={styles.tagsList}>
           {concept.alsoAppliesIn.map((role) => (
             <View
