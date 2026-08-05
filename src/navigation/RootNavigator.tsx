@@ -7,6 +7,8 @@ import CompletionScreen from '../screens/CompletionScreen';
 import DailyPracticeScreen from '../screens/DailyPracticeScreen';
 import LessonScreen from '../screens/LessonScreen';
 import ExploreFeedbackScreen from '../screens/explore/ExploreFeedbackScreen';
+import WeeklyReportScreen from '../screens/explore/WeeklyReportScreen';
+import AccountScreen from '../screens/onboarding/AccountScreen';
 import LifeStageScreen from '../screens/onboarding/LifeStageScreen';
 import TrackSelectScreen from '../screens/onboarding/TrackSelectScreen';
 import { useTheme } from '../theme/ThemeContext';
@@ -49,7 +51,9 @@ export default function RootNavigator() {
   return (
     <NavigationContainer theme={navTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!profile.hasOnboarded ? (
+        {!profile.hasAccount ? (
+          <Stack.Screen name="Account" component={AccountScreen} />
+        ) : !profile.hasOnboarded ? (
           <>
             <Stack.Screen name="TrackSelect" component={TrackSelectScreen} />
             <Stack.Screen name="LifeStage" component={LifeStageScreen} />
@@ -71,6 +75,11 @@ export default function RootNavigator() {
             <Stack.Screen
               name="ExploreFeedback"
               component={ExploreFeedbackScreen}
+            />
+            <Stack.Screen
+              name="WeeklyReport"
+              component={WeeklyReportScreen}
+              options={{ animation: 'slide_from_bottom' }}
             />
           </>
         )}

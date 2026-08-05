@@ -2,7 +2,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import NudgeBanner from '../../components/NudgeBanner';
 import PrimaryButton from '../../components/PrimaryButton';
 import { useProgress } from '../../context/ProgressContext';
@@ -54,6 +54,19 @@ export default function ExploreHubScreen({ navigation }: Props) {
         Sample any track before committing to it.
       </Text>
 
+      <Pressable
+        onPress={() => navigation.navigate('WeeklyReport')}
+        style={[styles.reportCard, { backgroundColor: colors.surfaceRaised, borderColor: colors.primary }]}
+      >
+        <Text style={styles.reportIcon}>📧</Text>
+        <View style={styles.cardBody}>
+          <Text style={[styles.cardTitle, { color: colors.text }]}>Weekly Report</Text>
+          <Text style={[styles.cardTagline, { color: colors.textMuted }]}>
+            Preview the Sunday email you'll get based on your progress
+          </Text>
+        </View>
+      </Pressable>
+
       {nudgeTrackId && (
         <NudgeBanner
           trackName={TRACKS[nudgeTrackId].name}
@@ -104,6 +117,18 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     marginBottom: spacing.lg,
+  },
+  reportCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+    gap: spacing.md,
+  },
+  reportIcon: {
+    fontSize: 24,
   },
   card: {
     flexDirection: 'row',

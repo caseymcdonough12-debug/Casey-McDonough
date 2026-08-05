@@ -12,6 +12,9 @@ import { estimatedProficiencyFromExperience } from '../utils/xp';
 const STORAGE_KEY = 'rung:userProfile';
 
 const DEFAULT_PROFILE: UserProfile = {
+  hasAccount: false,
+  accountName: null,
+  accountEmail: null,
   hasOnboarded: false,
   onboardingTrack: null,
   isExploring: false,
@@ -24,6 +27,7 @@ const DEFAULT_PROFILE: UserProfile = {
 interface UserContextValue {
   profile: UserProfile;
   loading: boolean;
+  createAccount: (name: string, email: string) => Promise<void>;
   completeOnboarding: (
     track: TrackId | null,
     lifeStage: LifeStage,
@@ -56,6 +60,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   };
 
+  const createAccount = async (name: string, email: string) => {
+    await persist({
+      ...profile,
+      hasAccount: true,
+      accountName: name,
+      accountEmail: email,
+    });
+  };
+
   const completeOnboarding = async (
     track: TrackId | null,
     lifeStage: LifeStage,
@@ -78,7 +91,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = useMemo(
-    () => ({ profile, loading, completeOnboarding, setCurrentTrack }),
+    () => ({ profile, loading, createAccount, completeOnboarding, setCurrentTrack }),
     [profile, loading]
   );
 

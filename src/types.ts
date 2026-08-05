@@ -121,6 +121,9 @@ export interface ConceptTeaching {
 }
 
 export interface UserProfile {
+  hasAccount: boolean; // gates the account-creation screen before onboarding
+  accountName: string | null;
+  accountEmail: string | null;
   hasOnboarded: boolean;
   onboardingTrack: TrackId | null; // null means "Not sure yet" -> Explore
   isExploring: boolean;

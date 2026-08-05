@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { TrackId } from '../types';
 
 export type RootStackParamList = {
+  Account: undefined;
   TrackSelect: undefined;
   LifeStage: { track: TrackId | null };
   MainTabs: NavigatorScreenParams<MainTabsParamList> | undefined;
@@ -17,6 +18,7 @@ export type RootStackParamList = {
     isDaily?: boolean;
   };
   ExploreFeedback: { trackId: TrackId; nodeId: string };
+  WeeklyReport: undefined;
 };
 
 export type MainTabsParamList = {
