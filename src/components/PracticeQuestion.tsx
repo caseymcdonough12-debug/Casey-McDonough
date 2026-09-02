@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import MiniSpreadsheet from './MiniSpreadsheet';
 import PrimaryButton from './PrimaryButton';
@@ -27,9 +27,48 @@ export default function PracticeQuestion({
   const [input, setInput] = useState('');
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [selectedLeftId, setSelectedLeftId] = useState<string | null>(null);
+  const [matchSelections, setMatchSelections] = useState<Record<string, number>>({});
+
+  const matchingPairs = question.kind === 'matching' ? question.pairs : null;
+  const shuffledRight = useMemo(() => {
+    if (!matchingPairs) return [];
+    const arr = matchingPairs.map((p) => ({ text: p.right }));
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [question.id]);
+  const usedRightIndices = new Set(Object.values(matchSelections));
+
+  const handleLeftPress = (pairId: string) => {
+    if (feedback !== null) return;
+    if (matchSelections[pairId] !== undefined) {
+      setMatchSelections((prev) => {
+        const next = { ...prev };
+        delete next[pairId];
+        return next;
+      });
+      setSelectedLeftId(pairId);
+      return;
+    }
+    setSelectedLeftId(pairId);
+  };
+
+  const handleRightPress = (rightIdx: number) => {
+    if (feedback !== null || usedRightIndices.has(rightIdx) || !selectedLeftId) return;
+    setMatchSelections((prev) => ({ ...prev, [selectedLeftId]: rightIdx }));
+    setSelectedLeftId(null);
+  };
 
   const canCheck =
-    question.kind === 'multipleChoice' ? selectedOptionId !== null : !!input.trim();
+    question.kind === 'multipleChoice'
+      ? selectedOptionId !== null
+      : question.kind === 'matching'
+        ? Object.keys(matchSelections).length === question.pairs.length
+        : !!input.trim();
 
   const handleCheck = async () => {
     if (!canCheck) return;
@@ -38,6 +77,10 @@ export default function PracticeQuestion({
       correct = isFormulaCorrect(input, question.acceptedFormulas);
     } else if (question.kind === 'numeric') {
       correct = isNumericCorrect(input, question.correctValue, question.tolerance);
+    } else if (question.kind === 'matching') {
+      correct = question.pairs.every(
+        (p) => shuffledRight[matchSelections[p.id]]?.text === p.right
+      );
     } else {
       correct = selectedOptionId === question.correctOptionId;
     }
@@ -50,7 +93,9 @@ export default function PracticeQuestion({
       ? question.correctFormula
       : question.kind === 'numeric'
         ? `${question.targetLabel}: ${question.correctValue}${question.unit ?? ''}`
-        : question.options.find((o) => o.id === question.correctOptionId)?.text ?? '';
+        : question.kind === 'matching'
+          ? question.pairs.map((p) => `${p.left} → ${p.right}`).join('   •   ')
+          : question.options.find((o) => o.id === question.correctOptionId)?.text ?? '';
 
   return (
     <View style={styles.container}>
@@ -177,6 +222,80 @@ export default function PracticeQuestion({
         </View>
       )}
 
+      {question.kind === 'matching' && (
+        <>
+          <Text style={[styles.matchingHint, { color: colors.textMuted }]}>
+            Tap a line item, then tap the statement it belongs to.
+          </Text>
+          <View style={styles.matchingRow}>
+            <View style={styles.matchingCol}>
+              {question.pairs.map((p) => {
+                const rightIdx = matchSelections[p.id];
+                const isMatched = rightIdx !== undefined;
+                const isSelected = selectedLeftId === p.id;
+                const isPairCorrect = feedback !== null && isMatched && shuffledRight[rightIdx]?.text === p.right;
+                const borderColor =
+                  feedback !== null
+                    ? isPairCorrect
+                      ? colors.success
+                      : colors.danger
+                    : isSelected
+                      ? colors.primary
+                      : isMatched
+                        ? colors.textMuted
+                        : colors.border;
+                return (
+                  <Pressable
+                    key={p.id}
+                    disabled={feedback !== null}
+                    onPress={() => handleLeftPress(p.id)}
+                    style={[
+                      styles.matchItem,
+                      { backgroundColor: colors.surface, borderColor, borderWidth: isSelected ? 2 : 1.5 },
+                    ]}
+                  >
+                    <Text style={[styles.matchItemText, { color: colors.text }]}>{p.left}</Text>
+                    {isMatched && (
+                      <Text
+                        style={[
+                          styles.matchItemArrow,
+                          { color: feedback !== null ? borderColor : colors.textMuted },
+                        ]}
+                      >
+                        → {shuffledRight[rightIdx]?.text}
+                      </Text>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </View>
+            <View style={styles.matchingCol}>
+              {shuffledRight.map((r, idx) => {
+                const isUsed = usedRightIndices.has(idx);
+                return (
+                  <Pressable
+                    key={idx}
+                    disabled={feedback !== null || isUsed}
+                    onPress={() => handleRightPress(idx)}
+                    style={[
+                      styles.matchItem,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: isUsed ? colors.textMuted : colors.border,
+                        borderWidth: 1.5,
+                        opacity: isUsed ? 0.4 : 1,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.matchItemText, { color: colors.text }]}>{r.text}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        </>
+      )}
+
       {feedback && (
         <View
           style={[
@@ -284,6 +403,36 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 15,
     fontWeight: '600',
+  },
+  matchingHint: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  matchingRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  matchingCol: {
+    flex: 1,
+    gap: spacing.sm,
+  },
+  matchItem: {
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  matchItemText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  matchItemArrow: {
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 2,
   },
   feedbackBox: {
     marginTop: spacing.lg,

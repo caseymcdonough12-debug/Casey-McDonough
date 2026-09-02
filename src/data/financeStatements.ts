@@ -4,6 +4,23 @@ export const NODE_ID = 'finance-reading-statements';
 
 export const FINANCE_STATEMENTS_QUESTIONS: LessonQuestion[] = [
   {
+    id: 'finance-q0-pl-vs-balance-sheet',
+    nodeId: NODE_ID,
+    conceptId: 'pl-reading',
+    kind: 'multipleChoice',
+    difficultyTier: 1,
+    prompt: 'Which of these line items shows up on a P&L (income statement) rather than a Balance Sheet?',
+    options: [
+      { id: 'a', text: 'Revenue' },
+      { id: 'b', text: 'Total Assets' },
+      { id: 'c', text: 'Liabilities' },
+      { id: 'd', text: 'Equity' },
+    ],
+    correctOptionId: 'a',
+    explanation:
+      'Revenue is a P&L line — the income statement tracks revenue and expenses over a period of time. Assets, Liabilities, and Equity all live on the Balance Sheet, a snapshot at one point in time.',
+  },
+  {
     id: 'finance-q1-pl-net-income',
     nodeId: NODE_ID,
     conceptId: 'pl-reading',
@@ -80,5 +97,23 @@ export const FINANCE_STATEMENTS_QUESTIONS: LessonQuestion[] = [
     correctValue: 5000,
     tolerance: 1,
     explanation: 'Ending Cash = Beginning + Operating + Financing − Investing Used, so Investing Used = $50,000 + $40,000 + $10,000 − $95,000 = $5,000.',
+  },
+  {
+    id: 'finance-q7-match-statements',
+    nodeId: NODE_ID,
+    conceptId: 'cash-flow-reading',
+    kind: 'matching',
+    difficultyTier: 3,
+    prompt: 'Match each line item to the statement it belongs on.',
+    pairs: [
+      { id: 'revenue', left: 'Revenue', right: 'P&L (Income Statement)' },
+      { id: 'net-income', left: 'Net Income', right: 'P&L (Income Statement)' },
+      { id: 'total-assets', left: 'Total Assets', right: 'Balance Sheet' },
+      { id: 'liabilities', left: 'Liabilities', right: 'Balance Sheet' },
+      { id: 'operating-activities', left: 'Operating Activities', right: 'Cash Flow Statement' },
+      { id: 'ending-cash', left: 'Ending Cash', right: 'Cash Flow Statement' },
+    ],
+    explanation:
+      'The P&L covers revenue and profit over a period; the Balance Sheet is a snapshot of what a company owns and owes; the Cash Flow Statement tracks how cash actually moved in and out.',
   },
 ];

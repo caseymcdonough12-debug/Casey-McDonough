@@ -44,7 +44,7 @@ export interface LessonNode {
   live: boolean; // has real lesson content
 }
 
-export type QuestionKind = 'formula' | 'multipleChoice' | 'numeric';
+export type QuestionKind = 'formula' | 'multipleChoice' | 'numeric' | 'matching';
 
 export interface SpreadsheetCell {
   row: number;
@@ -94,7 +94,19 @@ export interface NumericQuestion extends BaseLessonQuestion {
   tolerance?: number; // absolute tolerance, defaults to 0.01
 }
 
-export type LessonQuestion = FormulaQuestion | MultipleChoiceQuestion | NumericQuestion;
+export interface MatchingPair {
+  id: string; // stable id for the left-side item
+  left: string;
+  right: string; // the correct right-side label text for this left item
+}
+
+export interface MatchingQuestion extends BaseLessonQuestion {
+  kind: 'matching';
+  context?: string;
+  pairs: MatchingPair[]; // right-side text may repeat across pairs (e.g. multiple items belong to the same category)
+}
+
+export type LessonQuestion = FormulaQuestion | MultipleChoiceQuestion | NumericQuestion | MatchingQuestion;
 
 export interface ConceptExample {
   scenarioPrompt: string; // the worked example's own prompt
