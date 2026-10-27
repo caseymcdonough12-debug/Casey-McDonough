@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { SpreadsheetCell } from '../types';
 
@@ -83,18 +84,18 @@ const styles = StyleSheet.create({
     height: 36,
   },
   letterText: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
   },
   rowLabelText: {
-    fontSize: 12,
-    fontWeight: '600',
+    ...typography.caption,
   },
   headerText: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
   },
   valueText: {
-    fontSize: 12,
+    ...typography.caption,
+    fontWeight: '400',
   },
 });

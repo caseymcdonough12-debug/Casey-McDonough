@@ -6,6 +6,7 @@ import { useProgress } from '../../context/ProgressContext';
 import { useUser } from '../../context/UserContext';
 import { RootStackParamList } from '../../navigation/types';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'WeeklyReport'>;
@@ -93,19 +94,16 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
   },
   eyebrow: {
-    fontSize: 12,
-    fontWeight: '800',
+    ...typography.micro,
     letterSpacing: 1,
     marginBottom: spacing.sm,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    ...typography.title,
     marginBottom: spacing.sm,
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.body,
     marginBottom: spacing.lg,
   },
   emptyBox: {
@@ -114,8 +112,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   emptyText: {
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.body,
   },
   card: {
     borderWidth: 1,
@@ -132,17 +129,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   numberBadgeText: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '800',
   },
   cardHeadline: {
-    fontSize: 16,
+    ...typography.subheading,
     fontWeight: '800',
     marginBottom: spacing.xs,
   },
   cardDetail: {
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.body,
   },
   itemsList: {
     marginTop: spacing.xs,
@@ -153,17 +149,16 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   itemBullet: {
-    fontSize: 14,
+    ...typography.body,
     fontWeight: '800',
   },
   itemText: {
-    fontSize: 14,
+    ...typography.body,
     flex: 1,
-    lineHeight: 20,
   },
   disclaimer: {
-    fontSize: 12,
-    lineHeight: 17,
+    ...typography.caption,
+    fontWeight: '400',
     marginTop: spacing.sm,
     marginBottom: spacing.lg,
   },

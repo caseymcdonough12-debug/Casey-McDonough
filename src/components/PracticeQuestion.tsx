@@ -1,8 +1,17 @@
-import React, { useMemo, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  Easing,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import MiniSpreadsheet from './MiniSpreadsheet';
 import PrimaryButton from './PrimaryButton';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { LessonQuestion } from '../types';
 import { isFormulaCorrect } from '../utils/formula';
@@ -70,6 +79,34 @@ export default function PracticeQuestion({
         ? Object.keys(matchSelections).length === question.pairs.length
         : !!input.trim();
 
+  // Feedback box slides up + fades in; a wrong answer also shakes it.
+  const feedbackAnim = useRef(new Animated.Value(0)).current;
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+
+  const playFeedbackAnimation = (correct: boolean) => {
+    feedbackAnim.setValue(0);
+    Animated.timing(feedbackAnim, {
+      toValue: 1,
+      duration: 260,
+      easing: Easing.out(Easing.back(1.4)),
+      useNativeDriver: true,
+    }).start();
+
+    if (!correct) {
+      shakeAnim.setValue(0);
+      Animated.sequence(
+        [8, -8, 5, -5, 0].map((toValue) =>
+          Animated.timing(shakeAnim, {
+            toValue,
+            duration: 55,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          })
+        )
+      ).start();
+    }
+  };
+
   const handleCheck = async () => {
     if (!canCheck) return;
     let correct = false;
@@ -86,6 +123,7 @@ export default function PracticeQuestion({
     }
     await onSubmit(correct);
     setFeedback(correct ? 'correct' : 'incorrect');
+    playFeedbackAnimation(correct);
   };
 
   const correctAnswerDisplay =
@@ -151,10 +189,10 @@ export default function PracticeQuestion({
           {question.cells && question.columnHeaders && (
             <MiniSpreadsheet columnHeaders={question.columnHeaders} cells={question.cells} />
           )}
-          <View style={styles.inputRow}>
-            <Text style={[styles.cellLabel, { color: colors.textMuted }]}>
-              {question.targetLabel}
-            </Text>
+          <Text style={[styles.answerLabel, { color: colors.textMuted }]}>
+            {question.targetLabel}
+          </Text>
+          <View style={styles.answerRow}>
             <TextInput
               value={input}
               onChangeText={setInput}
@@ -297,12 +335,22 @@ export default function PracticeQuestion({
       )}
 
       {feedback && (
-        <View
+        <Animated.View
           style={[
             styles.feedbackBox,
             {
               backgroundColor: colors.surfaceRaised,
               borderColor: feedback === 'correct' ? colors.success : colors.danger,
+              opacity: feedbackAnim,
+              transform: [
+                {
+                  translateY: feedbackAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [12, 0],
+                  }),
+                },
+                { translateX: shakeAnim },
+              ],
             },
           ]}
         >
@@ -320,7 +368,7 @@ export default function PracticeQuestion({
           <Text style={[styles.feedbackExplanation, { color: colors.textMuted }]}>
             {question.explanation}
           </Text>
-        </View>
+        </Animated.View>
       )}
 
       <View style={styles.spacer} />
@@ -340,8 +388,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
   },
   progress: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...typography.label,
     marginBottom: spacing.sm,
   },
   scenarioTag: {
@@ -353,20 +400,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   scenarioTagText: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
   },
   context: {
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.body,
     marginBottom: spacing.sm,
     fontStyle: 'italic',
   },
   prompt: {
-    fontSize: 17,
-    fontWeight: '700',
+    ...typography.subheading,
     marginBottom: spacing.md,
-    lineHeight: 24,
   },
   inputRow: {
     flexDirection: 'row',
@@ -374,23 +418,34 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.lg,
   },
+  // Numeric answers get the label stacked above — targetLabel can be long
+  // ("Investing Activities Used ($)") and squeezes badly in a side column.
+  answerLabel: {
+    ...typography.label,
+    fontWeight: '700',
+    marginTop: spacing.lg,
+    marginBottom: spacing.xs,
+  },
+  answerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
   cellLabel: {
-    fontSize: 13,
+    ...typography.label,
     fontWeight: '700',
     width: 32,
   },
   input: {
+    ...typography.mono,
     flex: 1,
     borderWidth: 1.5,
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    fontSize: 16,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   unit: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyStrong,
   },
   optionsList: {
     gap: spacing.sm,
@@ -401,12 +456,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   optionText: {
-    fontSize: 15,
+    ...typography.body,
     fontWeight: '600',
   },
   matchingHint: {
-    fontSize: 12,
-    fontWeight: '600',
+    ...typography.caption,
     marginTop: spacing.sm,
     marginBottom: spacing.sm,
   },
@@ -426,11 +480,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   matchItemText: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...typography.label,
   },
   matchItemArrow: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
     marginTop: 2,
   },
@@ -441,18 +494,17 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   feedbackTitle: {
-    fontSize: 15,
+    ...typography.bodyStrong,
     fontWeight: '800',
     marginBottom: spacing.xs,
   },
   feedbackAnswer: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyStrong,
     marginBottom: spacing.xs,
   },
   feedbackExplanation: {
-    fontSize: 13,
-    lineHeight: 19,
+    ...typography.label,
+    fontWeight: '400',
   },
   spacer: {
     height: spacing.xl,

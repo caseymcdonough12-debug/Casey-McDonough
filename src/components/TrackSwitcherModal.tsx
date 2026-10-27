@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { TRACK_ORDER, TRACKS } from '../data/tracks';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { TrackId } from '../types';
 
@@ -91,8 +92,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '800',
+    ...typography.heading,
     marginBottom: spacing.md,
   },
   grid: {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     right: 8,
-    fontSize: 13,
+    ...typography.label,
     fontWeight: '800',
   },
   cardIcon: {
@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardTitle: {
-    fontSize: 11,
+    ...typography.micro,
     fontWeight: '700',
+    letterSpacing: 0,
     textAlign: 'center',
   },
   closeButton: {
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeText: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyStrong,
   },
 });

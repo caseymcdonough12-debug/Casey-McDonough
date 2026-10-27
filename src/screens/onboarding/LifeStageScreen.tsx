@@ -5,6 +5,7 @@ import PrimaryButton from '../../components/PrimaryButton';
 import { useUser } from '../../context/UserContext';
 import { RootStackParamList } from '../../navigation/types';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 import { ExperienceLevel, LifeStage } from '../../types';
 
@@ -117,8 +118,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl * 2,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '800',
+    ...typography.heading,
     marginBottom: spacing.md,
   },
   secondTitle: {
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   optionText: {
-    fontSize: 15,
+    ...typography.body,
     fontWeight: '600',
   },
   segmentRow: {
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   segmentText: {
-    fontSize: 14,
+    ...typography.body,
     fontWeight: '700',
   },
   spacer: {

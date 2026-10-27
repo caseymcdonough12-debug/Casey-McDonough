@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import PrimaryButton from '../../components/PrimaryButton';
+import Wordmark from '../../components/Wordmark';
 import { useUser } from '../../context/UserContext';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 
 function isValidEmail(email: string) {
@@ -28,7 +30,9 @@ export default function AccountScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={[styles.eyebrow, { color: colors.primary }]}>Welcome to Rung</Text>
+      <View style={styles.brandRow}>
+        <Wordmark />
+      </View>
       <Text style={[styles.title, { color: colors.text }]}>Create your free account</Text>
       <Text style={[styles.subtitle, { color: colors.textMuted }]}>
         We'll track your progress and send you a report every Sunday on what you're getting good at.
@@ -91,46 +95,41 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingTop: spacing.xl * 2,
   },
-  eyebrow: {
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 1,
-    marginBottom: spacing.sm,
+  brandRow: {
+    marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    ...typography.title,
     marginBottom: spacing.sm,
   },
   subtitle: {
-    fontSize: 15,
-    lineHeight: 21,
+    ...typography.body,
     marginBottom: spacing.lg,
   },
   form: {
     gap: spacing.xs,
   },
   label: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
     marginTop: spacing.sm,
     marginBottom: spacing.xs,
   },
   input: {
+    ...typography.body,
     borderWidth: 1,
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 4,
-    fontSize: 15,
   },
   spacer: {
     flex: 1,
     minHeight: spacing.lg,
   },
   fineprint: {
-    fontSize: 12,
+    ...typography.caption,
+    fontWeight: '400',
     textAlign: 'center',
     marginTop: spacing.md,
-    lineHeight: 17,
   },
 });

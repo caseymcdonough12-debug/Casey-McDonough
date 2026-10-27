@@ -1,11 +1,12 @@
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import PrimaryButton from '../components/PrimaryButton';
 import { useProgress } from '../context/ProgressContext';
 import { RootStackParamList } from '../navigation/types';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { displayStreak } from '../utils/date';
 
@@ -20,6 +21,47 @@ export default function CompletionScreen({ route, navigation }: Props) {
   const streak = displayStreak(progress.streak, progress.lastActiveDate);
   const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
 
+  // Celebration: emoji pops first, then the headline, then the stats stagger in.
+  const pop = useRef(new Animated.Value(0)).current;
+  const headline = useRef(new Animated.Value(0)).current;
+  const stats = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    // Overlapping, not strictly sequential — a strict sequence left the screen
+    // looking empty for nearly a second before the stats appeared.
+    Animated.parallel([
+      Animated.spring(pop, {
+        toValue: 1,
+        friction: 5,
+        tension: 110,
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.delay(100),
+        Animated.timing(headline, {
+          toValue: 1,
+          duration: 220,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(220),
+        Animated.stagger(
+          70,
+          stats.map((v) =>
+            Animated.timing(v, {
+              toValue: 1,
+              duration: 200,
+              easing: Easing.out(Easing.ease),
+              useNativeDriver: true,
+            })
+          )
+        ),
+      ]),
+    ]).start();
+  }, [pop, headline, stats]);
+
   const handleContinue = () => {
     if (fromExplore) {
       navigation.replace('ExploreFeedback', { trackId, nodeId });
@@ -33,36 +75,65 @@ export default function CompletionScreen({ route, navigation }: Props) {
     );
   };
 
+  const riseFrom = (value: Animated.Value) => ({
+    opacity: value,
+    transform: [
+      { translateY: value.interpolate({ inputRange: [0, 1], outputRange: [14, 0] }) },
+    ],
+  });
+
+  const statCards = [
+    { value: `+${xpEarned}`, label: 'XP earned', color: colors.accent },
+    { value: `🔥 ${streak}`, label: 'day streak', color: colors.text },
+    { value: `${accuracy}%`, label: 'accuracy', color: colors.text },
+  ];
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={styles.emoji}>{isDaily ? '🔥' : '🎉'}</Text>
-      <Text
+      <Animated.Text
         style={[
-          styles.title,
-          { color: colors.text, marginBottom: isDaily ? spacing.sm : spacing.xl },
+          styles.emoji,
+          {
+            opacity: pop,
+            transform: [
+              { scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) },
+            ],
+          },
         ]}
       >
-        {isDaily ? "Today's practice complete!" : 'Lesson complete!'}
-      </Text>
-      {isDaily && (
-        <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-          New problems tomorrow — come back and keep the streak going.
+        {isDaily ? '🔥' : '🎉'}
+      </Animated.Text>
+
+      <Animated.View style={riseFrom(headline)}>
+        <Text
+          style={[
+            styles.title,
+            { color: colors.text, marginBottom: isDaily ? spacing.sm : spacing.xl },
+          ]}
+        >
+          {isDaily ? "Today's practice complete!" : 'Lesson complete!'}
         </Text>
-      )}
+        {isDaily && (
+          <Text style={[styles.subtitle, { color: colors.textMuted }]}>
+            New problems tomorrow — come back and keep the streak going.
+          </Text>
+        )}
+      </Animated.View>
 
       <View style={styles.statsRow}>
-        <View style={[styles.statCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.statValue, { color: colors.accent }]}>+{xpEarned}</Text>
-          <Text style={[styles.statLabel, { color: colors.textMuted }]}>XP earned</Text>
-        </View>
-        <View style={[styles.statCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.statValue, { color: colors.text }]}>🔥 {streak}</Text>
-          <Text style={[styles.statLabel, { color: colors.textMuted }]}>day streak</Text>
-        </View>
-        <View style={[styles.statCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.statValue, { color: colors.text }]}>{accuracy}%</Text>
-          <Text style={[styles.statLabel, { color: colors.textMuted }]}>accuracy</Text>
-        </View>
+        {statCards.map((card, i) => (
+          <Animated.View
+            key={card.label}
+            style={[
+              styles.statCard,
+              { backgroundColor: colors.surface, borderColor: colors.border },
+              riseFrom(stats[i]),
+            ]}
+          >
+            <Text style={[styles.statValue, { color: card.color }]}>{card.value}</Text>
+            <Text style={[styles.statLabel, { color: colors.textMuted }]}>{card.label}</Text>
+          </Animated.View>
+        ))}
       </View>
 
       <View style={styles.spacer} />
@@ -81,16 +152,16 @@ const styles = StyleSheet.create({
   },
   emoji: {
     fontSize: 56,
+    lineHeight: 64,
     marginBottom: spacing.md,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    ...typography.title,
     marginBottom: spacing.sm,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 14,
+    ...typography.body,
     marginBottom: spacing.xl,
     textAlign: 'center',
   },
@@ -107,12 +178,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statValue: {
-    fontSize: 20,
-    fontWeight: '800',
+    ...typography.heading,
     marginBottom: spacing.xs,
   },
   statLabel: {
-    fontSize: 11,
+    ...typography.micro,
+    fontWeight: '600',
+    letterSpacing: 0,
     textAlign: 'center',
   },
   spacer: {

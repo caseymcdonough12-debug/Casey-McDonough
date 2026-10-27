@@ -10,6 +10,7 @@ import { useUser } from '../../context/UserContext';
 import { TRACK_ORDER, TRACKS, LESSON_NODES } from '../../data/tracks';
 import { MainTabsParamList, RootStackParamList } from '../../navigation/types';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 import { TrackId } from '../../types';
 
@@ -110,12 +111,11 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    ...typography.title,
     marginBottom: spacing.xs,
   },
   subtitle: {
-    fontSize: 14,
+    ...typography.body,
     marginBottom: spacing.lg,
   },
   reportCard: {
@@ -146,16 +146,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardTitle: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyStrong,
   },
   cardTagline: {
-    fontSize: 12,
+    ...typography.caption,
+    fontWeight: '400',
     marginTop: 2,
   },
   comingSoon: {
-    fontSize: 11,
+    ...typography.micro,
     fontWeight: '700',
+    letterSpacing: 0,
     marginTop: 4,
   },
   cardAction: {

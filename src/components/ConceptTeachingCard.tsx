@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import PrimaryButton from './PrimaryButton';
 import MiniSpreadsheet from './MiniSpreadsheet';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { ConceptTeaching } from '../types';
 
@@ -105,8 +106,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
   },
   eyebrow: {
-    fontSize: 12,
-    fontWeight: '800',
+    ...typography.micro,
     letterSpacing: 1,
     marginBottom: spacing.sm,
   },
@@ -119,13 +119,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   chipText: {
-    fontSize: 16,
+    ...typography.mono,
     fontWeight: '800',
-    fontFamily: 'Menlo',
   },
   body: {
-    fontSize: 15,
-    lineHeight: 22,
+    ...typography.body,
     marginBottom: spacing.md,
   },
   jobBox: {
@@ -135,25 +133,22 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   jobLabel: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    ...typography.micro,
     marginBottom: spacing.xs,
   },
   jobRole: {
-    fontSize: 15,
+    ...typography.bodyStrong,
     fontWeight: '800',
     marginBottom: spacing.xs,
   },
   jobScenario: {
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.body,
   },
   tagsRow: {
     marginBottom: spacing.lg,
   },
   tagsLabel: {
-    fontSize: 12,
+    ...typography.caption,
     fontWeight: '700',
     marginBottom: spacing.xs,
   },
@@ -169,13 +164,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   tagText: {
-    fontSize: 12,
-    fontWeight: '600',
+    ...typography.caption,
   },
   sectionLabel: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    ...typography.micro,
     marginBottom: spacing.sm,
   },
   formulaBox: {
@@ -189,12 +181,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   formulaCellLabel: {
-    fontSize: 13,
+    ...typography.label,
     fontWeight: '700',
   },
   formulaText: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...typography.mono,
   },
   spacer: {
     height: spacing.lg,

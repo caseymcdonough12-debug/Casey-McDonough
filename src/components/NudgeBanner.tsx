@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 
 interface Props {
@@ -41,10 +42,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   text: {
-    fontSize: 14,
+    ...typography.body,
     fontWeight: '600',
     marginBottom: spacing.sm,
-    lineHeight: 19,
   },
   actions: {
     flexDirection: 'row',
@@ -57,8 +57,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   secondaryText: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...typography.label,
   },
   primaryAction: {
     paddingVertical: spacing.xs,
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   primaryText: {
-    fontSize: 13,
+    ...typography.label,
     fontWeight: '700',
   },
 });

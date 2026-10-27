@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { TRACK_ORDER, TRACKS } from '../../data/tracks';
 import { RootStackParamList } from '../../navigation/types';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 import { TrackId } from '../../types';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -104,12 +105,11 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl * 2,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    ...typography.title,
     marginBottom: spacing.sm,
   },
   subtitle: {
-    fontSize: 15,
+    ...typography.body,
     marginBottom: spacing.lg,
   },
   grid: {
@@ -133,11 +133,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   cardTitle: {
-    fontSize: 15,
-    fontWeight: '700',
+    ...typography.bodyStrong,
     marginBottom: spacing.xs,
   },
   cardTagline: {
-    fontSize: 12,
+    ...typography.caption,
+    fontWeight: '400',
   },
 });

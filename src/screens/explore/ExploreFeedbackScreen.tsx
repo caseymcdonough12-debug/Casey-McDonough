@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useProgress } from '../../context/ProgressContext';
 import { RootStackParamList } from '../../navigation/types';
 import { radius, spacing } from '../../theme/colors';
+import { typography } from '../../theme/typography';
 import { useTheme } from '../../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ExploreFeedback'>;
@@ -67,8 +68,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '800',
+    ...typography.heading,
     marginBottom: spacing.xl,
     textAlign: 'center',
   },

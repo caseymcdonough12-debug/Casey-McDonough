@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ResponsiveShell from './src/components/ResponsiveShell';
 import { ProgressProvider } from './src/context/ProgressContext';
 import { UserProvider } from './src/context/UserContext';
 import RootNavigator from './src/navigation/RootNavigator';
@@ -12,7 +13,9 @@ export default function App() {
       <ThemeProvider>
         <UserProvider>
           <ProgressProvider>
-            <RootNavigator />
+            <ResponsiveShell>
+              <RootNavigator />
+            </ResponsiveShell>
             <StatusBar style="auto" />
           </ProgressProvider>
         </UserProvider>

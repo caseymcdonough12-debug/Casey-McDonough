@@ -11,6 +11,7 @@ import { getDailyQuestionCount } from '../data/dailyQuestions';
 import { LESSON_NODES, TRACKS } from '../data/tracks';
 import { RootStackParamList } from '../navigation/types';
 import { radius, spacing } from '../theme/colors';
+import { typography } from '../theme/typography';
 import { useTheme } from '../theme/ThemeContext';
 import { TrackId } from '../types';
 import { displayStreak, todayStr } from '../utils/date';
@@ -37,6 +38,22 @@ export default function MapScreen() {
   const dailyPracticeDoneToday = trackProgress.lastDailyPracticeDate === todayStr();
   const dailyQuestionCount = getDailyQuestionCount(trackId);
 
+  const completedCount = nodes.filter((n) =>
+    trackProgress.completedNodeIds.includes(n.id)
+  ).length;
+  const progressPct = nodes.length === 0 ? 0 : Math.round((completedCount / nodes.length) * 100);
+
+  // The lesson to point the user at: first unlocked, playable, not-yet-done node.
+  const nextNodeId = nodes.find((node, index) => {
+    const isCompleted = trackProgress.completedNodeIds.includes(node.id);
+    const previousCompleted =
+      index === 0 || trackProgress.completedNodeIds.includes(nodes[index - 1].id);
+    return !isCompleted && previousCompleted && node.live;
+  })?.id;
+
+  const activeToday = trackProgress.lastActiveDate === todayStr();
+  const showComeBackNudge = track.live && !activeToday;
+
   const handleSelectTrack = async (newTrack: TrackId) => {
     setSwitcherVisible(false);
     if (newTrack !== trackId) {
@@ -62,6 +79,14 @@ export default function MapScreen() {
     navigation.navigate('Lesson', { trackId, nodeId, fromExplore: false });
   };
 
+  const handleNudgePress = () => {
+    if (nextNodeId) {
+      navigation.navigate('Lesson', { trackId, nodeId: nextNodeId, fromExplore: false });
+    } else if (dailyPracticeUnlocked && !dailyPracticeDoneToday) {
+      handleStartDailyPractice();
+    }
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       <View style={styles.header}>
@@ -85,6 +110,46 @@ export default function MapScreen() {
           </View>
         </View>
       </View>
+
+      <View style={styles.progressBlock}>
+        <View style={styles.progressLabelRow}>
+          <Text style={[styles.progressLabel, { color: colors.textMuted }]}>
+            {completedCount} of {nodes.length} lessons complete
+          </Text>
+          <Text style={[styles.progressPct, { color: colors.textMuted }]}>{progressPct}%</Text>
+        </View>
+        <View style={[styles.progressTrack, { backgroundColor: colors.border }]}>
+          <View
+            style={[
+              styles.progressFill,
+              { backgroundColor: track.color, width: `${progressPct}%` },
+            ]}
+          />
+        </View>
+      </View>
+
+      {showComeBackNudge && (
+        <Pressable
+          onPress={handleNudgePress}
+          style={[
+            styles.comeBackCard,
+            { backgroundColor: colors.surface, borderColor: track.color },
+          ]}
+        >
+          <Text style={styles.comeBackIcon}>{streak > 0 ? '🔥' : '👋'}</Text>
+          <View style={styles.comeBackTextGroup}>
+            <Text style={[styles.comeBackTitle, { color: colors.text }]}>
+              {streak > 0
+                ? `Keep your ${streak}-day streak alive`
+                : 'Start your streak today'}
+            </Text>
+            <Text style={[styles.comeBackSubtitle, { color: colors.textMuted }]}>
+              You haven't practiced yet today — one lesson is all it takes.
+            </Text>
+          </View>
+          <Text style={[styles.comeBackChevron, { color: track.color }]}>›</Text>
+        </Pressable>
+      )}
 
       {!track.live && (
         <View style={[styles.noticeBanner, { backgroundColor: colors.surfaceRaised, borderColor: colors.border }]}>
@@ -151,14 +216,28 @@ export default function MapScreen() {
               : 'locked';
 
           return (
-            <NodeButton
-              key={node.id}
-              title={node.title}
-              status={status}
-              isLive={node.live}
-              accentColor={track.color}
-              onPress={() => handleNodePress(node.id, node.live, status)}
-            />
+            <View key={node.id} style={styles.nodeRow}>
+              {index > 0 && (
+                <View
+                  style={[
+                    styles.connector,
+                    {
+                      backgroundColor: trackProgress.completedNodeIds.includes(nodes[index - 1].id)
+                        ? colors.success
+                        : colors.border,
+                    },
+                  ]}
+                />
+              )}
+              <NodeButton
+                title={node.title}
+                status={status}
+                isLive={node.live}
+                isNext={node.id === nextNodeId}
+                accentColor={track.color}
+                onPress={() => handleNodePress(node.id, node.live, status)}
+              />
+            </View>
           );
         })}
       </ScrollView>
@@ -199,11 +278,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   trackPillText: {
-    fontSize: 14,
+    ...typography.label,
     fontWeight: '700',
   },
   trackPillCaret: {
-    fontSize: 12,
+    ...typography.caption,
   },
   statsRow: {
     flexDirection: 'row',
@@ -218,7 +297,60 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   statText: {
-    fontSize: 14,
+    ...typography.label,
+    fontWeight: '700',
+  },
+  progressBlock: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.sm,
+  },
+  progressLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.xs,
+  },
+  progressLabel: {
+    ...typography.caption,
+  },
+  progressPct: {
+    ...typography.caption,
+  },
+  progressTrack: {
+    height: 6,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: radius.pill,
+  },
+  comeBackCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 2,
+    gap: spacing.sm,
+  },
+  comeBackIcon: {
+    fontSize: 24,
+  },
+  comeBackTextGroup: {
+    flex: 1,
+  },
+  comeBackTitle: {
+    ...typography.label,
+    fontWeight: '800',
+    marginBottom: 2,
+  },
+  comeBackSubtitle: {
+    ...typography.caption,
+    fontWeight: '400',
+  },
+  comeBackChevron: {
+    fontSize: 24,
     fontWeight: '700',
   },
   noticeBanner: {
@@ -229,7 +361,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   noticeText: {
-    fontSize: 12,
+    ...typography.caption,
+    fontWeight: '400',
   },
   dailyCard: {
     flexDirection: 'row',
@@ -248,16 +381,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dailyTitle: {
-    fontSize: 14,
+    ...typography.label,
     fontWeight: '700',
     marginBottom: 2,
   },
   dailySubtitle: {
-    fontSize: 12,
-    lineHeight: 16,
+    ...typography.caption,
+    fontWeight: '400',
   },
   nodesContainer: {
     alignItems: 'center',
     paddingVertical: spacing.lg,
+  },
+  nodeRow: {
+    alignItems: 'center',
+  },
+  connector: {
+    width: 4,
+    height: 28,
+    borderRadius: 2,
+    marginBottom: spacing.xs,
   },
 });
